@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: lorenzo
+      POSTGRES_DB: database
+    ports:
+      - 5432:5432
+
+  rabbit:
+    image: rabbitmq:3-management
+    environment:
+#      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - 15672:15672
+      - 5672:5672
+#    volumes:
+#      - "./enabled_plugins:/etc/rabbitmq/enabled_plugins"

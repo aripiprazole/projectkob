@@ -1,0 +1,23 @@
+<configuration>
+    <appender name="STDOUT" class="com.lorenzoog.projectkob.logger.LogAppender">
+        <withJansi>true</withJansi>
+    </appender>
+
+    <root level="TRACE">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+<!--    <logger name="DeployService" level="ERROR"/>-->
+
+    <logger name="org.apache.http" level="ERROR"/>
+    <logger name="org.eclipse.jgit" level="ERROR"/>
+    <logger name="com.github.dockerjava" level="ERROR"/>
+
+    <logger name="com.zaxxer.hikari" level="ERROR"/>
+    <logger name="com.zaxxer.hikari.pool.PoolBase" level="ERROR"/>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="ERROR"/>
+    <logger name="com.zaxxer.hikari.HikariDataSource" level="ERROR"/>
+
+    <logger name="org.eclipse.jetty" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
+</configuration>
