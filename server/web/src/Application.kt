@@ -24,56 +24,50 @@ import io.ktor.locations.*
 import io.ktor.serialization.*
 import io.ktor.util.*
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.dsl.module
 import org.koin.ktor.ext.modules
 
 fun main(args: Array<String>): Unit = io.ktor.server.jetty.EngineMain.main(args)
 
 
-
 private val json = Json {
-    ignoreUnknownKeys = true
+  ignoreUnknownKeys = true
 }
 
 private val http = HttpClient(Apache) {
-    install(JsonFeature) {
-        serializer = KotlinxSerializer(json)
-    }
+  install(JsonFeature) {
+    serializer = KotlinxSerializer(json)
+  }
 }
 
 @Suppress("unused") // Referenced in application.conf
 @OptIn(KtorExperimentalAPI::class, ExperimentalStdlibApi::class)
 fun Application.module() {
-    modules(
-        koinDatabaseModule(),
-        module {
-            single { http }
-            single { createDockerClient(getAppConfig()) }
-            single { ImageService(get()) }
-            single { DaemonService(get()) }
-            single { DeployService(get()) }
-            single { AppService() }
-            single { SessionService() }
-        }
-    )
-
-    with(DatabaseConnector) { connect() }
-
-    install(Locations)
-    install(ConditionalHeaders)
-    install(ContentNegotiation) {
-        json(json)
+  modules(
+    koinDatabaseModule(),
+    module {
+      single { http }
+      single { createDockerClient(getAppConfig()) }
+      single { ImageService(get()) }
+      single { DaemonService(get()) }
+      single { DeployService(get()) }
+      single { AppService() }
+      single { SessionService() }
     }
+  )
 
-    setupWebSockets()
-    setupCallLogging()
-    setupCors()
+  with(DatabaseConnector) { connect() }
 
-    setupAuthentication()
-    setupRouting()
+  install(Locations)
+  install(ConditionalHeaders)
+  install(ContentNegotiation) {
+    json(json)
+  }
+
+  setupWebSockets()
+  setupCallLogging()
+  setupCors()
+
+  setupAuthentication()
+  setupRouting()
 }

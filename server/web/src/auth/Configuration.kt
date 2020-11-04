@@ -12,47 +12,47 @@ import org.koin.ktor.ext.inject
 
 @OptIn(KtorExperimentalAPI::class)
 fun Application.setupAuthentication() = authentication {
-    environment.config.config("github-oauth").run {
-        oauth {
-            providerLookup = {
-                OAuthServerSettings.OAuth2ServerSettings(
-                    name = "github",
-                    authorizeUrl = "https://github.com/login/oauth/authorize",
-                    accessTokenUrl = "https://github.com/login/oauth/access_token",
-                    clientId = property("client-id").getString(),
-                    clientSecret = property("client-secret").getString(),
-                    defaultScopes = listOf("repo_deployment", "repo")
-                )
-            }
-            client = get()
-            urlProvider = { property("redirect-url").getString() }
-        }
+  environment.config.config("github-oauth").run {
+    oauth {
+      providerLookup = {
+        OAuthServerSettings.OAuth2ServerSettings(
+          name = "github",
+          authorizeUrl = "https://github.com/login/oauth/authorize",
+          accessTokenUrl = "https://github.com/login/oauth/access_token",
+          clientId = property("client-id").getString(),
+          clientSecret = property("client-secret").getString(),
+          defaultScopes = listOf("repo_deployment", "repo")
+        )
+      }
+      client = get()
+      urlProvider = { property("redirect-url").getString() }
     }
+  }
 }
 
 const val DEFAULT_TOKEN = ""
 
 private class AuthenticatedRouteSelector :
-    RouteSelector(RouteSelectorEvaluation.qualityConstant) {
+  RouteSelector(RouteSelectorEvaluation.qualityConstant) {
 
-    override fun evaluate(context: RoutingResolveContext, segmentIndex: Int) =
-        RouteSelectorEvaluation.Constant
+  override fun evaluate(context: RoutingResolveContext, segmentIndex: Int) =
+    RouteSelectorEvaluation.Constant
 }
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 fun Route.authenticated(route: Route.() -> Unit): Route {
-    val sessionService by inject<SessionService>()
+  val sessionService by inject<SessionService>()
 
-    return createChild(AuthenticatedRouteSelector()).apply {
-        intercept(ApplicationCallPipeline.Features) {
-            sessionService.validateToken(call.request.authorization().orEmpty())
-        }
-    }.apply(route)
+  return createChild(AuthenticatedRouteSelector()).apply {
+    intercept(ApplicationCallPipeline.Features) {
+      sessionService.validateToken(call.request.authorization().orEmpty())
+    }
+  }.apply(route)
 }
 
 @OptIn(KtorExperimentalAPI::class)
 suspend fun ApplicationCall.findLoggedUser(): GithubUser {
-    return application.get<SessionService>().findUserByToken(
-        request.authorization().orEmpty()
-    )
+  return application.get<SessionService>().findUserByToken(
+    request.authorization().orEmpty()
+  )
 }

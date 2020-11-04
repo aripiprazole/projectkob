@@ -8,8 +8,11 @@ import com.lorenzoog.projectkob.daemon.config.getAppConfig
 import com.lorenzoog.projectkob.daemon.services.DaemonService
 import com.lorenzoog.projectkob.daemon.services.DeployService
 import com.lorenzoog.projectkob.daemon.services.ImageService
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 
 // TODO(change to kubernetes)
 // TODO(create logging service with elastic search)
@@ -17,24 +20,24 @@ import kotlinx.coroutines.flow.*
 // TODO(integrate with rabbit mq)
 @OptIn(FlowPreview::class)
 suspend fun main(): Unit = withContext(SupervisorJob() + CoroutineName("kob@main")) {
-    val config = getAppConfig()
-    val docker = createDockerClient(config)
-    val eventScope = LocalEventScope()
+  val config = getAppConfig()
+  val docker = createDockerClient(config)
+  val eventScope = LocalEventScope()
 
-    val daemonService = DaemonService(docker)
-    val deployService = DeployService(docker)
-    val imageService = ImageService(docker)
+  val daemonService = DaemonService(docker)
+  val deployService = DeployService(docker)
+  val imageService = ImageService(docker)
 
-    lateinit var appService: AppService
+  lateinit var appService: AppService
 
-    val appId = "8432750"
+  val appId = "8432750"
 
-    appService.findAppById(appId).state
-        .filterIsInstance<AppState.Deployed>()
-        .map { deployService.findContainerIdByAppId(appId) }
-        .filterNotNull()
-        .flatMapConcat { app -> daemonService.inspectContainer(app) }
-        .collect { appState ->
-            println("RECEIVED $appState")
-        }
+  appService.findAppById(appId).state
+    .filterIsInstance<AppState.Deployed>()
+    .map { deployService.findContainerIdByAppId(appId) }
+    .filterNotNull()
+    .flatMapConcat { app -> daemonService.inspectContainer(app) }
+    .collect { appState ->
+      println("RECEIVED $appState")
+    }
 }

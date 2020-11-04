@@ -6,7 +6,7 @@ import io.ktor.request.*
 import org.slf4j.event.Level
 
 fun Application.setupCallLogging() = install(CallLogging) {
-    level = Level.INFO
+  level = Level.INFO
 
-    filter { call -> call.request.path().startsWith("/") }
+  filter { call -> call.request.path().startsWith("/") }
 }

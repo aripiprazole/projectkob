@@ -15,31 +15,31 @@ import io.ktor.routing.*
 import org.valiktor.ConstraintViolationException
 
 fun Application.setupRouting() = routing {
-    appsRoutes()
-    daemonRoutes()
-    authRoutes()
+  appsRoutes()
+  daemonRoutes()
+  authRoutes()
 
-    install(StatusPages) {
-        exception<AuthorizationException> {
-            call.respond(HttpStatusCode.Forbidden)
-        }
-
-        exception<AuthenticationException> {
-            call.respond(HttpStatusCode.Unauthorized)
-        }
-
-        exception<ConstraintViolationException> { cause ->
-            call.respond(HttpStatusCode.UnprocessableEntity, cause.asJsonObject())
-        }
-
-        exception<EntityNotFoundException> { cause ->
-            call.respond(HttpStatusCode.NotFound, cause.asJsonObject())
-        }
-
-        exception<Throwable> { cause ->
-            call.respond(HttpStatusCode.InternalServerError, cause.asJsonObject())
-
-            throw cause
-        }
+  install(StatusPages) {
+    exception<AuthorizationException> {
+      call.respond(HttpStatusCode.Forbidden)
     }
+
+    exception<AuthenticationException> {
+      call.respond(HttpStatusCode.Unauthorized)
+    }
+
+    exception<ConstraintViolationException> { cause ->
+      call.respond(HttpStatusCode.UnprocessableEntity, cause.asJsonObject())
+    }
+
+    exception<EntityNotFoundException> { cause ->
+      call.respond(HttpStatusCode.NotFound, cause.asJsonObject())
+    }
+
+    exception<Throwable> { cause ->
+      call.respond(HttpStatusCode.InternalServerError, cause.asJsonObject())
+
+      throw cause
+    }
+  }
 }

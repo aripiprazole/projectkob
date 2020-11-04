@@ -13,18 +13,18 @@ import io.ktor.routing.*
 
 @OptIn(KtorExperimentalLocationsAPI::class)
 fun Route.authRoutes() {
-    authenticate {
-        get<Login> {
-            val principal = call.principal<OAuthAccessTokenResponse.OAuth2>()
-                ?: throw AuthorizationException()
+  authenticate {
+    get<Login> {
+      val principal = call.principal<OAuthAccessTokenResponse.OAuth2>()
+        ?: throw AuthorizationException()
 
-            call.respond(principal.asJsonObject())
-        }
+      call.respond(principal.asJsonObject())
     }
+  }
 
-    get<User> {
-        call.respond(call.findLoggedUser())
-    }
+  get<User> {
+    call.respond(call.findLoggedUser())
+  }
 }
 
 @Location("login")

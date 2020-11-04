@@ -5,7 +5,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 fun Throwable.asJsonObject(builder: JsonObjectBuilder.() -> Unit = {}) = buildJsonObject {
-    put("message", message)
+  put("message", message)
 
-    apply(builder)
+  apply(builder)
 }

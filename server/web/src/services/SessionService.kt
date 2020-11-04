@@ -12,26 +12,26 @@ import org.koin.core.inject
 const val GITHUB_USER_URL = "https://api.github.com/user"
 
 interface SessionService {
-    suspend fun validateToken(token: String)
-    suspend fun findUserByToken(token: String): GithubUser
+  suspend fun validateToken(token: String)
+  suspend fun findUserByToken(token: String): GithubUser
 }
 
 @Suppress("FunctionName")
 fun SessionService(): SessionService = SessionServiceImpl()
 
 private class SessionServiceImpl : KoinComponent, SessionService {
-    private val client by inject<HttpClient>()
+  private val client by inject<HttpClient>()
 
-    override suspend fun validateToken(token: String): Unit = try {
-        findUserByToken(token)
-        Unit
-    } catch (exception: ClientRequestException) {
-        throw AuthorizationException()
-    }
+  override suspend fun validateToken(token: String): Unit = try {
+    findUserByToken(token)
+    Unit
+  } catch (exception: ClientRequestException) {
+    throw AuthorizationException()
+  }
 
-    override suspend fun findUserByToken(token: String): GithubUser {
-        return client.get(GITHUB_USER_URL) {
-            header(HttpHeaders.Authorization, token)
-        }
+  override suspend fun findUserByToken(token: String): GithubUser {
+    return client.get(GITHUB_USER_URL) {
+      header(HttpHeaders.Authorization, token)
     }
+  }
 }

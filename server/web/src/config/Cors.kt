@@ -5,15 +5,15 @@ import io.ktor.features.*
 import io.ktor.http.*
 
 fun Application.setupCors() = install(CORS) {
-    method(HttpMethod.Options)
-    method(HttpMethod.Put)
-    method(HttpMethod.Delete)
-    method(HttpMethod.Patch)
-    method(HttpMethod.Post)
+  method(HttpMethod.Options)
+  method(HttpMethod.Put)
+  method(HttpMethod.Delete)
+  method(HttpMethod.Patch)
+  method(HttpMethod.Post)
 
-    header(HttpHeaders.ContentType)
-    header(HttpHeaders.Authorization)
+  header(HttpHeaders.ContentType)
+  header(HttpHeaders.Authorization)
 
-    allowCredentials = true
-    anyHost()
+  allowCredentials = true
+  anyHost()
 }

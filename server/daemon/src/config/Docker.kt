@@ -9,13 +9,13 @@ import com.github.dockerjava.transport.DockerHttpClient
 import java.net.URI
 
 fun createDockerClient(config: Config): DockerClient {
-    val dockerClientConfig: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
-        .withDockerHost(config.host)
-        .build()
+  val dockerClientConfig: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
+    .withDockerHost(config.host)
+    .build()
 
-    val dockerHttpClient: DockerHttpClient = OkDockerHttpClient.Builder()
-        .dockerHost(URI(config.host))
-        .build()
+  val dockerHttpClient: DockerHttpClient = OkDockerHttpClient.Builder()
+    .dockerHost(URI(config.host))
+    .build()
 
-    return DockerClientImpl.getInstance(dockerClientConfig, dockerHttpClient)
+  return DockerClientImpl.getInstance(dockerClientConfig, dockerHttpClient)
 }

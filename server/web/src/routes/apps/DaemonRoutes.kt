@@ -21,68 +21,68 @@ import org.koin.ktor.ext.inject
 
 @OptIn(KtorExperimentalLocationsAPI::class, KtorExperimentalAPI::class)
 fun Route.daemonRoutes() = authenticated {
-    val daemonService by inject<DaemonService>()
-    val deployService by inject<DeployService>()
+  val daemonService by inject<DaemonService>()
+  val deployService by inject<DeployService>()
 
-    // TODO: remove, just for debugging
-    get("/apps/{id}/state") {
-        val app = call.findAppByParameters()
+  // TODO: remove, just for debugging
+  get("/apps/{id}/state") {
+    val app = call.findAppByParameters()
 
-        val containerId = deployService.findContainerIdByAppId(app.id)
-            ?: return@get call.respond("Do not have container id.")
+    val containerId = deployService.findContainerIdByAppId(app.id)
+      ?: return@get call.respond("Do not have container id.")
 
-        daemonService.inspectContainer(containerId).onEach {
-            println("STATE: $it ON DOCKER OF ${app.simpleId}")
-        }.launchIn(this)
+    daemonService.inspectContainer(containerId).onEach {
+      println("STATE: $it ON DOCKER OF ${app.simpleId}")
+    }.launchIn(this)
 
-        call.respond(app.state.value.toString())
-    }
+    call.respond(app.state.value.toString())
+  }
 
-    webSocket("/apps/{id}/state") {
-        val app = call.findAppByParameters()
+  webSocket("/apps/{id}/state") {
+    val app = call.findAppByParameters()
 
-        app.state.collect { send(it.toString()) }
-    }
+    app.state.collect { send(it.toString()) }
+  }
 
-    webSocket("/apps/{id}/logs") {
-        val app = call.findAppByParameters()
-    }
+  webSocket("/apps/{id}/logs") {
+    val app = call.findAppByParameters()
+  }
 
-    post<Apps.FindById.Kill> {
-        val app = call.findAppByParameters()
-        val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
+  post<Apps.FindById.Kill> {
+    val app = call.findAppByParameters()
+    val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
 
-        daemonService.killContainer(containerId)
+    daemonService.killContainer(containerId)
 
-        call.respond(HttpStatusCode.NoContent)
-    }
+    call.respond(HttpStatusCode.NoContent)
+  }
 
-    post<Apps.FindById.Stop> {
-        val app = call.findAppByParameters()
-        val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
+  post<Apps.FindById.Stop> {
+    val app = call.findAppByParameters()
+    val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
 
-        daemonService.stopContainer(containerId)
+    daemonService.stopContainer(containerId)
 
-        call.respond(HttpStatusCode.NoContent)
-    }
+    call.respond(HttpStatusCode.NoContent)
+  }
 
-    post<Apps.FindById.Start> {
-        val app = call.findAppByParameters()
-        val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
+  post<Apps.FindById.Start> {
+    val app = call.findAppByParameters()
+    val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
 
-        daemonService.attach(containerId).launchIn(this)
+    daemonService.attach(containerId).launchIn(this)
 
-        call.respond(HttpStatusCode.NoContent)
-    }
+    call.respond(HttpStatusCode.NoContent)
+  }
 
-    post<Apps.FindById.Deploy> {
-        val app = call.findAppByParameters()
+  post<Apps.FindById.Deploy> {
+    val app = call.findAppByParameters()
 
-        deployService.deploy(app, DeployConfig {
-            repository = "https://github.com/LorenzooG/happy-nlw"
-            memory = 2_480_000L
-        })
+    deployService.deploy(app, DeployConfig {
+      repository = "https://github.com/LorenzooG/happy-nlw"
+      memory = 2_480_000L
+    })
 
-        call.respond(HttpStatusCode.NoContent)
-    }
+    call.respond(HttpStatusCode.NoContent)
+  }
 }

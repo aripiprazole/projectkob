@@ -22,125 +22,125 @@ import kotlin.properties.Delegates.notNull
 private const val PREFIX = "kob@DeployService"
 
 interface DeployService {
-    /**
-     * Will deploy and get the container id of app
-     *
-     * @param app the app that will be created the container
-     * @param config the config that will be used to create [app]'s container
-     * @return Created container id for [app]
-     * @see App
-     * @see DeployConfig
-     * @see ContainerId
-     */
-    suspend fun deploy(app: App, config: DeployConfig): ContainerId
+  /**
+   * Will deploy and get the container id of app
+   *
+   * @param app the app that will be created the container
+   * @param config the config that will be used to create [app]'s container
+   * @return Created container id for [app]
+   * @see App
+   * @see DeployConfig
+   * @see ContainerId
+   */
+  suspend fun deploy(app: App, config: DeployConfig): ContainerId
 
-    suspend fun findContainerIdByAppId(appId: String): ContainerId?
+  suspend fun findContainerIdByAppId(appId: String): ContainerId?
 }
 
 @Suppress("FunctionName")
 fun DeployService(docker: DockerClient): DeployService {
-    return DockerDeployService(LoggerFactory.getLogger("DeployService"), docker, linkedMapOf())
+  return DockerDeployService(LoggerFactory.getLogger("DeployService"), docker, linkedMapOf())
 }
 
 private class DockerDeployService(
-    private val logger: Logger,
-    private val docker: DockerClient,
-    private val appIdContainerIdMap: MutableMap<String, ContainerId>
+  private val logger: Logger,
+  private val docker: DockerClient,
+  private val appIdContainerIdMap: MutableMap<String, ContainerId>
 ) : DeployService, CoroutineScope {
-    override val coroutineContext = Executors.newFixedThreadPool(8).asCoroutineDispatcher()
+  override val coroutineContext = Executors.newFixedThreadPool(8).asCoroutineDispatcher()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun deploy(app: App, config: DeployConfig): ContainerId {
-        logger.info("Deploying container for $app")
+  @OptIn(ExperimentalCoroutinesApi::class)
+  override suspend fun deploy(app: App, config: DeployConfig): ContainerId {
+    logger.info("Deploying container for $app")
 
-        val image = "${app.id}:1.0"
-        val buildDir = File("daemon/repositories/${app.id}").also { file ->
-            if (file.exists()) file.deleteRecursively()
-        }
-
-        Git.cloneRepository()
-            .setURI(config.repo)
-            .setDirectory(buildDir)
-            .call()
-
-        docker.buildImageCmd()
-            .withDockerfile(File(buildDir, "backend/Dockerfile"))
-            .withTags(setOf(image))
-            .executeAsChannel()
-            .consumeAsFlow()
-            .onEach { item ->
-                val message = (item.stream ?: return@onEach)
-                    .replace("\n", " ")
-
-                app.logs.info(message)
-                logger.trace("Building ${app.simpleId}: $message")
-            }
-            .catch { error ->
-                val message = error.message ?: "No error message provided: ${error::class.qualifiedName}"
-
-                app.logs.error(message)
-            }
-            .filter { it.isBuildSuccessIndicated }
-            .single()
-
-        logger.info("Downloaded image for repo ${config.repo}: $image")
-
-        val container = withContext(coroutineContext + CoroutineName("$PREFIX-#deploy-${app.id}")) {
-            docker.createContainerCmd(image)
-                .withEnv(config.env.map { (key, value) ->
-                    "$key=$value"
-                })
-                .withWorkingDir("/app-${app.id}")
-                .withAttachStdout(true)
-                .withAttachStdin(true)
-                .withAttachStderr(true)
-                .withHostConfig(
-                    HostConfig.newHostConfig().withPortBindings(
-                        Ports(
-                            ExposedPort.tcp(8080),
-                            Ports.Binding.bindPort(9090)
-                        )
-                    )
-                )
-                .exec()
-        }
-
-        logger.info("Deployed container for $app: $container")
-
-        appIdContainerIdMap[app.id] = container.id
-
-        app.state.value = AppState.Deployed
-
-        return container.id
+    val image = "${app.id}:1.0"
+    val buildDir = File("daemon/repositories/${app.id}").also { file ->
+      if (file.exists()) file.deleteRecursively()
     }
 
-    override suspend fun findContainerIdByAppId(appId: String): ContainerId? {
-        return appIdContainerIdMap[appId]
+    Git.cloneRepository()
+      .setURI(config.repo)
+      .setDirectory(buildDir)
+      .call()
+
+    docker.buildImageCmd()
+      .withDockerfile(File(buildDir, "backend/Dockerfile"))
+      .withTags(setOf(image))
+      .executeAsChannel()
+      .consumeAsFlow()
+      .onEach { item ->
+        val message = (item.stream ?: return@onEach)
+          .replace("\n", " ")
+
+        app.logs.info(message)
+        logger.trace("Building ${app.simpleId}: $message")
+      }
+      .catch { error ->
+        val message = error.message ?: "No error message provided: ${error::class.qualifiedName}"
+
+        app.logs.error(message)
+      }
+      .filter { it.isBuildSuccessIndicated }
+      .single()
+
+    logger.info("Downloaded image for repo ${config.repo}: $image")
+
+    val container = withContext(coroutineContext + CoroutineName("$PREFIX-#deploy-${app.id}")) {
+      docker.createContainerCmd(image)
+        .withEnv(config.env.map { (key, value) ->
+          "$key=$value"
+        })
+        .withWorkingDir("/app-${app.id}")
+        .withAttachStdout(true)
+        .withAttachStdin(true)
+        .withAttachStderr(true)
+        .withHostConfig(
+          HostConfig.newHostConfig().withPortBindings(
+            Ports(
+              ExposedPort.tcp(8080),
+              Ports.Binding.bindPort(9090)
+            )
+          )
+        )
+        .exec()
     }
+
+    logger.info("Deployed container for $app: $container")
+
+    appIdContainerIdMap[app.id] = container.id
+
+    app.state.value = AppState.Deployed
+
+    return container.id
+  }
+
+  override suspend fun findContainerIdByAppId(appId: String): ContainerId? {
+    return appIdContainerIdMap[appId]
+  }
 }
 
 @Suppress("FunctionName")
 inline fun DeployConfig(builder: DeployConfigBuilder.() -> Unit): DeployConfig =
-    DeployConfigBuilder().apply(builder).build()
+  DeployConfigBuilder().apply(builder).build()
 
 @Serializable
 data class DeployConfig(
-    val repo: String,
-    val memory: Long,
-    val ports: Map<Int, Int>,
-    val env: Map<String, String>,
+  val repo: String,
+  val memory: Long,
+  val ports: Map<Int, Int>,
+  val env: Map<String, String>,
 )
 
 class DeployConfigBuilder {
-    lateinit var repository: String
-    var memory by notNull<Long>()
-    var env = mutableMapOf<String, Any>()
-    var ports = mutableMapOf<Int, Int>()
+  lateinit var repository: String
+  var memory by notNull<Long>()
+  var env = mutableMapOf<String, Any>()
+  var ports = mutableMapOf<Int, Int>()
 
-    fun build() = DeployConfig(
-        repository,
-        memory,
-        ports,
-        env.mapValues { (_, value) -> value.toString() },
-    )
+  fun build() = DeployConfig(
+    repository,
+    memory,
+    ports,
+    env.mapValues { (_, value) -> value.toString() },
+  )
 }

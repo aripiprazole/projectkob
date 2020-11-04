@@ -14,26 +14,26 @@ import org.koin.core.inject
 import org.koin.dsl.module
 
 object DatabaseConnector : Connector, KoinComponent {
-    private val tables = arrayOf(Apps)
-    private val database by inject<Database>()
+  private val tables = arrayOf(Apps)
+  private val database by inject<Database>()
 
-    @OptIn(KtorExperimentalAPI::class)
-    override fun Application.connect(): Unit = transaction(database) {
-        SchemaUtils.createMissingTablesAndColumns(*tables)
-    }
+  @OptIn(KtorExperimentalAPI::class)
+  override fun Application.connect(): Unit = transaction(database) {
+    SchemaUtils.createMissingTablesAndColumns(*tables)
+  }
 }
 
 @OptIn(KtorExperimentalAPI::class)
 fun Application.koinDatabaseModule() = module {
-    environment.config.config("database").run {
-        single {
-            Database.connect(HikariDataSource(HikariConfig().apply {
-                jdbcUrl = property("jdbc-url").getString()
-                username = property("user").getString()
-                password = property("password").getString()
-                driverClassName = property("driver").getString()
-                maximumPoolSize = propertyOrNull("maximum-pool-size")?.getString()?.toInt() ?: 8
-            }))
-        }
+  environment.config.config("database").run {
+    single {
+      Database.connect(HikariDataSource(HikariConfig().apply {
+        jdbcUrl = property("jdbc-url").getString()
+        username = property("user").getString()
+        password = property("password").getString()
+        driverClassName = property("driver").getString()
+        maximumPoolSize = propertyOrNull("maximum-pool-size")?.getString()?.toInt() ?: 8
+      }))
     }
+  }
 }

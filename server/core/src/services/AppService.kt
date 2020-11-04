@@ -5,12 +5,12 @@ import com.lorenzoog.projectkob.core.dtos.Page
 import com.lorenzoog.projectkob.core.models.App
 
 interface AppService {
-    suspend fun findPaginated(page: Int): Page<App>
-    suspend fun findAppById(id: String): App
-    suspend fun create(data: AppCreateDto): App
+  suspend fun findPaginated(page: Int): Page<App>
+  suspend fun findAppById(id: String): App
+  suspend fun create(data: AppCreateDto): App
 
-    companion object {
-        const val PAGE_SIZE = 15
-    }
+  companion object {
+    const val PAGE_SIZE = 15
+  }
 }
 

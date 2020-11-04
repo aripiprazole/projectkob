@@ -5,8 +5,8 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 fun OAuth2.asJsonObject() = buildJsonObject {
-    put("expiresIn", expiresIn)
-    put("accessToken", accessToken)
-    put("refreshToken", refreshToken)
-    put("tokenType", tokenType)
+  put("expiresIn", expiresIn)
+  put("accessToken", accessToken)
+  put("refreshToken", refreshToken)
+  put("tokenType", tokenType)
 }
