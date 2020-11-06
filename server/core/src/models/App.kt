@@ -9,7 +9,7 @@ data class App(
   val name: String,
   val image: String = "ubuntu:latest"
 ) {
-  val simpleId get() = id.split("-").first()
+  inline val simpleId get() = id.split("-").first()
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val state = MutableStateFlow<AppState>(AppState.None)
