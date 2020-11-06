@@ -57,6 +57,7 @@ dependencies {
   // database dependencies
   implementation("com.zaxxer:HikariCP:$hikariVersion")
   runtimeOnly("org.postgresql:postgresql:$postgresqlVersion")
+  runtimeOnly("com.h2database:h2:$h2Version")
 
   // amqp client dependencies
   implementation("com.rabbitmq:amqp-client:$amqpVersion")

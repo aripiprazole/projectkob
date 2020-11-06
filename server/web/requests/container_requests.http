@@ -1,0 +1,12 @@
+### Deploy app
+POST http://127.0.0.1:{{port}}/apps/{{id}}/deploy
+Authorization: {{authorization_token}}
+
+### Start app
+POST http://127.0.0.1:{{port}}/apps/{{id}}/start
+Authorization: {{authorization_token}}
+
+### Debug state
+POST http://127.0.0.1:{{port}}/apps/{{id}}/state
+Authorization: {{authorization_token}}
+
