@@ -15,10 +15,14 @@ const GlobalStyle = createGlobalStyle`
   
   html,
   body,
-  #root {
-    height: fit-content;
-    min-height: 100vh;
+  #root,
+  #__next {
+    height: 100%;
     min-width: 320px;
+  }
+
+  svg, svg * {
+    color: #eee;
   }
 
   ul,

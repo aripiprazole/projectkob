@@ -1,7 +1,7 @@
-// import Head from "next/head";
+import React from "react";
 
-import { Container } from "~/pages/styles";
+import { Layout } from "~/components";
 
 export default function Home() {
-  return <Container>Hello, world!</Container>;
+  return <Layout header={<h1>Home</h1>}>Hello, world!</Layout>;
 }
