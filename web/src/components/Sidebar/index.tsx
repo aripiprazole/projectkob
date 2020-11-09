@@ -6,7 +6,11 @@ import { FiCode, FiHome, FiMenu, FiUser } from "react-icons/fi";
 
 import { Container, Item, Items, Nav, Logo } from "./styles";
 
-const Sidebar: React.VFC = () => {
+export type SidebarProps = {
+  selected: string;
+};
+
+const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
   return (
     <Container>
       <Logo>
@@ -14,9 +18,9 @@ const Sidebar: React.VFC = () => {
       </Logo>
 
       <Nav>
-        <SidebarItems />
+        <SidebarItems selected={selected} />
 
-        <Item>
+        <Item selected={selected === "profile"}>
           <Link href="/profile">
             <a>
               <FiUser size={28} />
@@ -30,10 +34,10 @@ const Sidebar: React.VFC = () => {
   );
 };
 
-const SidebarItems: React.VFC = () => (
+const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
   <Items>
     <li>
-      <Item selected>
+      <Item selected={selected === "home"}>
         <Link href="/">
           <a>
             <FiHome size={28} />
@@ -45,7 +49,7 @@ const SidebarItems: React.VFC = () => (
     </li>
 
     <li>
-      <Item>
+      <Item selected={selected === "apps"}>
         <Link href="/apps">
           <a>
             <FiMenu size={28} />

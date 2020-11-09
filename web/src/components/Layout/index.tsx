@@ -5,16 +5,21 @@ import Sidebar from "../Sidebar";
 import { Container, Content, Header } from "./styles";
 
 export type LayoutProps = {
-  header: ReactElement;
+  header?: ReactElement;
+  selected?: string;
 };
 
-const Layout: React.FC<LayoutProps> = ({ header, children }) => {
+const Layout: React.FC<LayoutProps> = ({
+  header,
+  children,
+  selected = "home",
+}) => {
   return (
     <Container>
-      <Sidebar />
+      <Sidebar selected={selected} />
 
       <Content>
-        <Header>{header}</Header>
+        {header && <Header>{header}</Header>}
 
         <main>{children}</main>
       </Content>
