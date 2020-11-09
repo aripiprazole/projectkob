@@ -30,10 +30,7 @@ class AppDocument extends Document<Props> {
   public render() {
     return (
       <Html>
-        <Head>
-          <title>App</title>
-          {this.props.stylesTag}
-        </Head>
+        <Head>{this.props.stylesTag}</Head>
 
         <body>
           <Main />
