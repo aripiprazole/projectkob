@@ -10,17 +10,18 @@ type OAuth2Response = {
 
 export const loggedUserState = selector({
   key: "loggedUserState",
-  get: async ({ get }) => {
-    try {
-      const response = await api.get("/user", {
-        headers: authorizationHeader(get),
-      });
+  // get: async ({ get }) => {
+  //   try {
+  //     const response = await api.get("/user", {
+  //       headers: authorizationHeader(get),
+  //     });
 
-      return User.of(response.data);
-    } catch (error) {
-      return null;
-    }
-  },
+  //     return User.of(response.data);
+  //   } catch (error) {
+  //     return null;
+  //   }
+  // },
+  get: () => new User(1, "Albert"),
 });
 
 export const authenticationTokenState = selector({
