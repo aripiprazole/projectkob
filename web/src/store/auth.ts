@@ -11,11 +11,15 @@ type OAuth2Response = {
 export const loggedUserState = selector({
   key: "loggedUserState",
   get: async ({ get }) => {
-    return api
-      .get("/user", {
+    try {
+      const response = await api.get("/user", {
         headers: authorizationHeader(get),
-      })
-      .then((response) => User.of(response.data));
+      });
+
+      return User.of(response.data);
+    } catch (error) {
+      return null;
+    }
   },
 });
 
@@ -27,10 +31,14 @@ export const authenticationTokenState = selector({
   },
 
   set: async ({}, temporaryCode) => {
-    const authenticationToken = await api
-      .post<OAuth2Response>(`/login?code=${temporaryCode}&state=none`)
-      .then((response) => response.data.accessToken);
+    try {
+      const authenticationToken = await api
+        .post<OAuth2Response>(`/login?code=${temporaryCode}&state=none`)
+        .then((response) => response.data.accessToken);
 
-    return localStorage.setItem("authorizationToken", authenticationToken);
+      return localStorage.setItem("authorizationToken", authenticationToken);
+    } catch (error) {
+      return null;
+    }
   },
 });
