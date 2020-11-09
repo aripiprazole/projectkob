@@ -9,7 +9,7 @@ export const Container = styled.aside`
 `;
 
 export const Logo = styled.span`
-  padding: 28px;
+  padding: 48px 28px;
 
   margin: 0 24px;
 
