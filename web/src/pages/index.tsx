@@ -34,6 +34,4 @@ const Content: React.VFC = () => {
   );
 };
 
-export default dynamic(async () => Home, {
-  ssr: false,
-});
+export default Home;

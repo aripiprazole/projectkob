@@ -7,7 +7,7 @@ import { FiCode, FiHome, FiMenu, FiUser } from "react-icons/fi";
 import { Container, Item, Items, Nav, Logo } from "./styles";
 
 export type SidebarProps = {
-  selected: string;
+  selected?: string;
 };
 
 const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {

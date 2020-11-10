@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { NextPage } from "next";
 
@@ -8,13 +7,13 @@ import { FiServer } from "react-icons/fi";
 
 import { useRecoilValue } from "recoil";
 
-import { Layout } from "~/components";
-
 import { appListState } from "~/store/apps";
 
-import { Container, Header, Apps, AppItem, AppLink } from "./styles";
+import { Layout } from "~/components";
 
-const AppsPage: NextPage = () => {
+import { Container, Header, AppList, AppListItem, AppItemLink } from "./styles";
+
+const Apps: NextPage = () => {
   return (
     <Layout selected="apps">
       <Container>
@@ -23,22 +22,22 @@ const AppsPage: NextPage = () => {
         </Header>
 
         <Suspense fallback="Loading...">
-          <AppsContent />
+          <Content />
         </Suspense>
       </Container>
     </Layout>
   );
 };
 
-const AppsContent: React.VFC = () => {
+const Content: React.VFC = () => {
   const apps = useRecoilValue(appListState);
 
   return (
-    <Apps>
+    <AppList>
       {apps.map((app) => (
-        <AppItem>
+        <AppListItem>
           <Link href="/apps/[appId]" as={`/apps/${app.id}`}>
-            <AppLink>
+            <AppItemLink>
               <FiServer size={24} />
 
               <div>
@@ -46,14 +45,12 @@ const AppsContent: React.VFC = () => {
 
                 <span>{app.repo}</span>
               </div>
-            </AppLink>
+            </AppItemLink>
           </Link>
-        </AppItem>
+        </AppListItem>
       ))}
-    </Apps>
+    </AppList>
   );
 };
 
-export default dynamic(async () => AppsPage, {
-  ssr: false,
-});
+export default Apps;

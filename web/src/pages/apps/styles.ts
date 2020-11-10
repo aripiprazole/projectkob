@@ -21,7 +21,7 @@ export const Header = styled.header`
   }
 `;
 
-export const Apps = styled.ul`
+export const AppList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -33,9 +33,9 @@ export const Apps = styled.ul`
   margin: auto;
 `;
 
-export const AppItem = styled.li``;
+export const AppListItem = styled.li``;
 
-export const AppLink = styled.a`
+export const AppItemLink = styled.a`
   padding: 12px;
 
   display: flex;

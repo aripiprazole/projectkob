@@ -9,11 +9,7 @@ export type LayoutProps = {
   selected?: string;
 };
 
-const Layout: React.FC<LayoutProps> = ({
-  header,
-  children,
-  selected = "home",
-}) => {
+const Layout: React.FC<LayoutProps> = ({ header, children, selected }) => {
   return (
     <Container>
       <Sidebar selected={selected} />

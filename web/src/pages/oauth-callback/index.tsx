@@ -10,6 +10,14 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { authenticationTokenState, loggedUserState } from "~/store/auth";
 
 const OAuthCallback: NextPage = () => {
+  return (
+    <Suspense fallback="Loading">
+      <Content />
+    </Suspense>
+  );
+};
+
+const Content: React.VFC = () => {
   const router = useRouter();
 
   const user = useRecoilValue(loggedUserState);
@@ -31,15 +39,4 @@ const OAuthCallback: NextPage = () => {
   return <div>Loading...</div>;
 };
 
-const OAuthCallbackWrapper: React.VFC = () => {
-  return (
-    <Suspense fallback="Loading">
-      <OAuthCallback />
-    </Suspense>
-  );
-};
-
-// TODO: remove, just 'cause https://github.com/facebookexperimental/Recoil/issues/722
-export default dynamic(async () => OAuthCallbackWrapper, {
-  ssr: false,
-});
+export default OAuthCallback;

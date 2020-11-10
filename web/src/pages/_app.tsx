@@ -1,6 +1,11 @@
+import React from "react";
+
+import dynamic from "next/dynamic";
 import { AppProps } from "next/app";
+
 import { RecoilRoot } from "recoil";
-import GlobalStyle from "~/styles/GlobalStyle";
+
+import { GlobalStyle } from "~/styles";
 
 const App: React.VFC<AppProps> = ({ Component, pageProps }) => {
   return (
@@ -12,4 +17,7 @@ const App: React.VFC<AppProps> = ({ Component, pageProps }) => {
   );
 };
 
-export default App;
+// disable ssr while isn't
+export default dynamic(async () => App, {
+  ssr: false,
+});
