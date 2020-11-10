@@ -46,6 +46,14 @@ export const AppLink = styled.a`
 
   cursor: pointer;
 
+  background: #fff;
+
+  transition: filter 150ms ease-in;
+
+  :hover {
+    filter: brightness(90%);
+  }
+
   > div {
     margin-left: 12px;
   }
