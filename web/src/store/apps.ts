@@ -1,6 +1,8 @@
-import { selector } from "recoil";
+import { atom, selector, selectorFamily } from "recoil";
 
 import { App } from "~/entities";
+
+import { None } from "~/entities/app-status";
 
 export const appListState = selector({
   key: "appsListState",
@@ -10,4 +12,14 @@ export const appListState = selector({
     new App("m1r1aa", "gitkib", "https://github.com/LorenzooG/gitkib"),
     new App("fn3729", "zipzopp", "https://github.com/LorenzooG/zipzop"),
   ],
+});
+
+export const appState = selectorFamily({
+  key: "appState",
+  get: () => async ({ get }) => get(appListState)[0]!!,
+});
+
+export const appStatusState = atom({
+  key: "appStatusState",
+  default: None,
 });

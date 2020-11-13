@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   svg, svg * {
-    color: #eee;
+    color: inherit;
   }
 
   ul,

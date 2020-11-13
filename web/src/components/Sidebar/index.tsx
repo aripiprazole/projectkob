@@ -14,7 +14,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
   return (
     <Container>
       <Logo>
-        <FiCode size={32} />
+        <FiCode color="#eee" size={32} />
       </Logo>
 
       <Nav>
@@ -23,7 +23,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
         <Item selected={selected === "profile"}>
           <Link href="/profile">
             <a>
-              <FiUser size={28} />
+              <FiUser color="#eee" size={28} />
 
               <span>Profile</span>
             </a>
@@ -40,7 +40,7 @@ const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
       <Item selected={selected === "home"}>
         <Link href="/">
           <a>
-            <FiHome size={28} />
+            <FiHome color="#eee" size={28} />
 
             <span>Home</span>
           </a>
@@ -52,7 +52,7 @@ const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
       <Item selected={selected === "apps"}>
         <Link href="/apps">
           <a>
-            <FiMenu size={28} />
+            <FiMenu color="#eee" size={28} />
 
             <span>Apps</span>
           </a>

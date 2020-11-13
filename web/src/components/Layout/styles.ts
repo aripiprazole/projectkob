@@ -20,6 +20,7 @@ export const Content = styled.div`
 `;
 
 export const Header = styled.header`
+  min-height: 72px;
   padding: 24px;
 
   border-bottom: 1px solid #d9d9d9;
