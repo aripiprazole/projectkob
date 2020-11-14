@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 import { authenticationTokenState, loggedUserState } from "~/store/auth";
 
-const OAuthCallback: NextPage = () => {
+const Page: NextPage = () => {
   return (
     <Suspense fallback="Loading">
       <Content />
@@ -37,4 +37,4 @@ const Content: React.VFC = () => {
   return <div>Loading...</div>;
 };
 
-export default OAuthCallback;
+export default Page;

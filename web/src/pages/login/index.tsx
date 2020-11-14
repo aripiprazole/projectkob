@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { Container } from "./styles";
 import { Button } from "@material-ui/core";
 
-const LoginPage: NextPage = () => {
+const Page: NextPage = () => {
   const router = useRouter();
 
   return (
@@ -24,4 +24,4 @@ const LoginPage: NextPage = () => {
   );
 };
 
-export default LoginPage;
+export default Page;

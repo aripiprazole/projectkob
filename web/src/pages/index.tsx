@@ -10,7 +10,7 @@ import { Layout } from "~/components";
 
 import { Container } from "./styles";
 
-const Home: NextPage = () => {
+const Page: NextPage = () => {
   return (
     <Layout header={<h1>Home</h1>}>
       <Suspense fallback="Loading...">
@@ -33,4 +33,4 @@ const Content: React.VFC = () => {
   );
 };
 
-export default Home;
+export default Page;

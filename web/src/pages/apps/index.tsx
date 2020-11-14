@@ -13,7 +13,7 @@ import { Layout } from "~/components";
 
 import { Container, Items, AppLink } from "./styles";
 
-const Apps: NextPage = () => {
+const Page: NextPage = () => {
   return (
     <Layout selected="apps" header={<h1>Apps</h1>}>
       <Container>
@@ -47,4 +47,4 @@ const Content: React.VFC = () => {
   );
 };
 
-export default Apps;
+export default Page;
