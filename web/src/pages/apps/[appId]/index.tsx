@@ -7,6 +7,8 @@ import { Button, TextField } from "@material-ui/core";
 
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
+import { MdPublish } from "react-icons/md";
+
 import { None } from "~/entities/app-status";
 
 import { appState, appStatusState } from "~/store/apps";
@@ -75,7 +77,10 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
             value={repo}
           />
 
-          <Button onClick={() => setStatus(None)}>Deploy</Button>
+          <Button onClick={() => setStatus(None)}>
+            <MdPublish size={16} />
+            Deploy
+          </Button>
         </Fieldset>
       </form>
     </Container>
