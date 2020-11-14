@@ -11,6 +11,8 @@ import { MdPublish } from "react-icons/md";
 
 import { Deploy } from "~/entities/app-status";
 
+import { authorized } from "~/utils";
+
 import { appState, appIsStartedState, appStatusState } from "~/store/apps";
 
 import { Layout, Loading, AppHeader } from "~/components";
@@ -90,4 +92,4 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
   );
 };
 
-export default Page;
+export default authorized(Page);

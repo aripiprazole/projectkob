@@ -12,6 +12,7 @@ import { appListState } from "~/store/apps";
 import { Layout } from "~/components";
 
 import { Container, Items, AppLink } from "./styles";
+import { authorized } from "~/utils";
 
 const Page: NextPage = () => {
   return (
@@ -47,4 +48,4 @@ const Content: React.VFC = () => {
   );
 };
 
-export default Page;
+export default authorized(Page);

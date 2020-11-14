@@ -7,6 +7,8 @@ import { useRecoilValue } from "recoil";
 
 import AnsiUp from "ansi_up";
 
+import { authorized } from "~/utils";
+
 import { Loading } from "~/components";
 
 import { appLogsState } from "~/store/apps";
@@ -48,4 +50,4 @@ const Content: React.VFC<Props> = ({ appId }) => {
   );
 };
 
-export default Page;
+export default authorized(Page);

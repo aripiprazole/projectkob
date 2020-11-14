@@ -1,8 +1,10 @@
-import { atom, selector, selectorFamily } from "recoil";
+import { selector } from "recoil";
+
+import { authorizationHeader } from "~/utils";
+
 import { User } from "~/entities";
 
 import { api } from "~/services";
-import { authorizationHeader } from "~/utils";
 
 type OAuth2Response = {
   accessToken: string;
@@ -10,18 +12,17 @@ type OAuth2Response = {
 
 export const loggedUserState = selector({
   key: "loggedUserState",
-  // get: async ({ get }) => {
-  //   try {
-  //     const response = await api.get("/user", {
-  //       headers: authorizationHeader(get),
-  //     });
+  get: async ({ get }) => {
+    try {
+      const response = await api.get("/user", {
+        headers: authorizationHeader(get),
+      });
 
-  //     return User.of(response.data);
-  //   } catch (error) {
-  //     return null;
-  //   }
-  // },
-  get: () => new User(1, "Albert"),
+      return User.of(response.data);
+    } catch (error) {
+      return null;
+    }
+  },
 });
 
 export const authenticationTokenState = selector({
@@ -33,13 +34,18 @@ export const authenticationTokenState = selector({
 
   set: async ({}, temporaryCode) => {
     try {
-      const authenticationToken = await api
-        .post<OAuth2Response>(`/login?code=${temporaryCode}&state=none`)
-        .then((response) => response.data.accessToken);
+      const response = await api.get<OAuth2Response>(
+        `/login?code=${temporaryCode}&state=none`
+      );
+      const authenticationToken = response.data.accessToken;
+
+      if (!authenticationToken) return;
 
       return localStorage.setItem("authorizationToken", authenticationToken);
     } catch (error) {
-      return null;
+      console.error("An unexpected error ocurred fetching accessToken", error);
+
+      return;
     }
   },
 });

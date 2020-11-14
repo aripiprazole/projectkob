@@ -5,11 +5,22 @@ import { useRouter } from "next/router";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 
+import { guest } from "~/utils";
+
 import { authenticationTokenState, loggedUserState } from "~/store/auth";
+
+import { Container } from "./styles";
+import { CircularProgress } from "@material-ui/core";
 
 const Page: NextPage = () => {
   return (
-    <Suspense fallback="Loading">
+    <Suspense
+      fallback={
+        <Container>
+          <CircularProgress />
+        </Container>
+      }
+    >
       <Content />
     </Suspense>
   );
@@ -18,7 +29,6 @@ const Page: NextPage = () => {
 const Content: React.VFC = () => {
   const router = useRouter();
 
-  const user = useRecoilValue(loggedUserState);
   const [token, setToken] = useRecoilState(authenticationTokenState);
 
   useEffect(() => {
@@ -29,12 +39,16 @@ const Content: React.VFC = () => {
   }, [router]);
 
   useEffect(() => {
-    if (!token || !user) return;
+    if (!token) return;
 
     router.push("/");
   }, [router, token]);
 
-  return <div>Loading...</div>;
+  return (
+    <Container>
+      <CircularProgress color="secondary" />
+    </Container>
+  );
 };
 
-export default Page;
+export default guest(Page);

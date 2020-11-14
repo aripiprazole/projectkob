@@ -4,6 +4,8 @@ import { NextPage } from "next";
 
 import { useRecoilValue } from "recoil";
 
+import { authorized } from "~/utils";
+
 import { loggedUserState } from "~/store/auth";
 
 import { Layout } from "~/components";
@@ -33,4 +35,4 @@ const Content: React.VFC = () => {
   );
 };
 
-export default Page;
+export default authorized(Page);
