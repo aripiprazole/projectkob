@@ -12,7 +12,7 @@ import { Container } from "./styles";
 
 const Page: NextPage = () => {
   return (
-    <Layout header={<h1>Home</h1>}>
+    <Layout selected="home" header={<h1>Home</h1>}>
       <Suspense fallback="Loading...">
         <Content />
       </Suspense>
