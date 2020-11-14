@@ -2,25 +2,6 @@ import styled from "styled-components";
 
 export const Container = styled.div``;
 
-export const Header = styled.header`
-  display: flex;
-  align-items: center;
-
-  background: #9627d6;
-
-  min-height: 196px;
-  padding-left: 48px;
-
-  border-bottom: 6px solid #791dad;
-
-  > h2 {
-    color: #eee;
-    width: 100%;
-    max-width: 1200px;
-    margin: auto;
-  }
-`;
-
 export const AppList = styled.ul`
   display: flex;
   flex-direction: column;
@@ -36,17 +17,18 @@ export const AppList = styled.ul`
 export const AppListItem = styled.li``;
 
 export const AppItemLink = styled.a`
-  padding: 12px;
+  padding: 16px 12px;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px 1fr;
   align-items: center;
 
-  border: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   border-radius: 8px;
 
-  cursor: pointer;
+  background: #f9f9f9;
 
-  background: #fff;
+  cursor: pointer;
 
   transition: filter 150ms ease-in;
 
@@ -54,14 +36,13 @@ export const AppItemLink = styled.a`
     filter: brightness(90%);
   }
 
-  > div {
-    margin-left: 12px;
+  > div.icon {
+    display: flex;
+    justify-content: center;
   }
 
-  > div > span {
-    font-size: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
+  > span.name {
+    padding: 0 12px;
   }
 
   > svg,

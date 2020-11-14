@@ -11,16 +11,12 @@ import { appListState } from "~/store/apps";
 
 import { Layout } from "~/components";
 
-import { Container, Header, AppList, AppListItem, AppItemLink } from "./styles";
+import { Container, AppList, AppListItem, AppItemLink } from "./styles";
 
 const Apps: NextPage = () => {
   return (
-    <Layout selected="apps">
+    <Layout selected="apps" header={<h1>Apps</h1>}>
       <Container>
-        <Header>
-          <h2>Apps</h2>
-        </Header>
-
         <Suspense fallback="Loading...">
           <Content />
         </Suspense>
@@ -38,13 +34,11 @@ const Content: React.VFC = () => {
         <AppListItem>
           <Link href="/apps/[appId]" as={`/apps/${app.id}`}>
             <AppItemLink>
-              <FiServer size={24} />
-
-              <div>
-                <h3>{app.name}</h3>
-
-                <span>{app.repo}</span>
+              <div className="icon">
+                <FiServer size={24} />
               </div>
+
+              <span className="name">{app.name}</span>
             </AppItemLink>
           </Link>
         </AppListItem>

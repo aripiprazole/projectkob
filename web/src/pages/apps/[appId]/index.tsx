@@ -3,6 +3,8 @@ import React, { Suspense } from "react";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 
+import { Button, TextField } from "@material-ui/core";
+
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { None } from "~/entities/app-status";
@@ -11,13 +13,7 @@ import { appState, appStatusState } from "~/store/apps";
 
 import { Layout, Loading, AppHeader } from "~/components";
 
-import {
-  Container,
-  InfoField,
-  InfoLabel,
-  FieldContainer,
-  Action,
-} from "./styles";
+import { Container, Fieldset } from "./styles";
 
 const Page: NextPage = () => {
   const { appId = "" } = useRouter().query;
@@ -53,26 +49,35 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
     <Container onSubmit={(event) => event.preventDefault()}>
       <h3>{name}'s info</h3>
 
-      <ul>
-        <FieldContainer>
-          <InfoLabel htmlFor="id">Id</InfoLabel>
-          <InfoField disabled value={id} id="id" />
-        </FieldContainer>
+      <div className="info">
+        <TextField
+          disabled
+          label="Id"
+          size="small"
+          variant="outlined"
+          value={id}
+        />
 
-        <FieldContainer>
-          <InfoLabel htmlFor="name">Name</InfoLabel>
-          <InfoField disabled value={name} id="name" />
-        </FieldContainer>
+        <TextField
+          disabled
+          label="Name"
+          size="small"
+          variant="outlined"
+          value={name}
+        />
 
-        <FieldContainer>
-          <InfoLabel htmlFor="repo">Repo</InfoLabel>
-          <InfoField disabled value={repo} id="repo" />
-        </FieldContainer>
+        <Fieldset>
+          <TextField
+            disabled
+            label="Repo"
+            size="small"
+            variant="outlined"
+            value={repo}
+          />
 
-        <FieldContainer>
-          <Action onClick={() => setStatus(None)}>Deploy</Action>
-        </FieldContainer>
-      </ul>
+          <Button onClick={() => setStatus(None)}>Deploy</Button>
+        </Fieldset>
+      </div>
     </Container>
   );
 };

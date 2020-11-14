@@ -8,7 +8,7 @@ import { FiPower, FiPaperclip } from "react-icons/fi";
 
 import { appState, appStatusState } from "~/store/apps";
 
-import { Header, Action, LogsAction } from "./styles";
+import { Header, ActionButton } from "./styles";
 
 import AppStatus, { Killing, Starting, Stopping } from "~/entities/app-status";
 
@@ -53,39 +53,48 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
       <ul>
         <li>
           <Link href="/apps/[appId]/logs" as={`/apps/${appId}/logs`}>
-            <LogsAction>
-              <FiPaperclip size={28} />
+            <ActionButton color="secondary">
+              <FiPaperclip size={16} />
 
-              <span>Logs</span>
-            </LogsAction>
+              <span className="text">Logs</span>
+            </ActionButton>
           </Link>
         </li>
 
         <li>
-          <Action
+          <ActionButton
             disabled={status.type !== "deployed"}
+            color={status.type === "deployed" ? "primary" : undefined}
             onClick={() => setStatus(Starting)}
           >
-            <FiPower color={START_COLOR} size={28} />
-          </Action>
+            <FiPower size={16} />
+
+            <span className="text">Start</span>
+          </ActionButton>
         </li>
 
         <li>
-          <Action
+          <ActionButton
             disabled={status.type !== "started"}
+            color={status.type === "started" ? "primary" : undefined}
             onClick={() => setStatus(Stopping)}
           >
-            <FiPower color={STOP_COLOR} size={28} />
-          </Action>
+            <FiPower size={16} />
+
+            <span className="text">Stop</span>
+          </ActionButton>
         </li>
 
         <li>
-          <Action
+          <ActionButton
             disabled={status.type !== "started"}
+            color={status.type === "started" ? "primary" : undefined}
             onClick={() => setStatus(Killing)}
           >
-            <FiPower color={KILL_COLOR} size={28} />
-          </Action>
+            <FiPower size={16} />
+
+            <span className="text">Kill</span>
+          </ActionButton>
         </li>
       </ul>
     </Header>
