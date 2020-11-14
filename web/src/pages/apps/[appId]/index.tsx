@@ -46,10 +46,10 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
   const { id, name, repo } = useRecoilValue(appState(appId));
 
   return (
-    <Container onSubmit={(event) => event.preventDefault()}>
+    <Container>
       <h3>{name}'s info</h3>
 
-      <div className="info">
+      <form onSubmit={(event) => event.preventDefault()} className="info">
         <TextField
           disabled
           label="Id"
@@ -77,7 +77,7 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
 
           <Button onClick={() => setStatus(None)}>Deploy</Button>
         </Fieldset>
-      </div>
+      </form>
     </Container>
   );
 };

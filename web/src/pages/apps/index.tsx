@@ -11,7 +11,7 @@ import { appListState } from "~/store/apps";
 
 import { Layout } from "~/components";
 
-import { Container, AppList, AppListItem, AppItemLink } from "./styles";
+import { Container, Items, AppLink } from "./styles";
 
 const Apps: NextPage = () => {
   return (
@@ -29,21 +29,21 @@ const Content: React.VFC = () => {
   const apps = useRecoilValue(appListState);
 
   return (
-    <AppList>
+    <Items>
       {apps.map((app) => (
-        <AppListItem>
+        <li key={app.id}>
           <Link href="/apps/[appId]" as={`/apps/${app.id}`}>
-            <AppItemLink>
+            <AppLink>
               <div className="icon">
                 <MdDns size={18} />
               </div>
 
               <span className="name">{app.name}</span>
-            </AppItemLink>
+            </AppLink>
           </Link>
-        </AppListItem>
+        </li>
       ))}
-    </AppList>
+    </Items>
   );
 };
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { MdDashboard, MdHome, MdApps, MdPerson } from "react-icons/md";
 
-import { Container, Item, Items, Nav, Logo } from "./styles";
+import { Container, Item, Nav, Logo } from "./styles";
 
 export type SidebarProps = {
   selected?: "apps" | "profile" | "home";
@@ -35,7 +35,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
 };
 
 const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
-  <Items>
+  <ul>
     <li>
       <Item selected={selected === "home"}>
         <Link href="/">
@@ -59,7 +59,7 @@ const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
         </Link>
       </Item>
     </li>
-  </Items>
+  </ul>
 );
 
 export default Sidebar;

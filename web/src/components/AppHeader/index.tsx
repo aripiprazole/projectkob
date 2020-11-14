@@ -8,7 +8,7 @@ import { MdPower, MdNote } from "react-icons/md";
 
 import { appState, appStatusState } from "~/store/apps";
 
-import { Header, ActionButton } from "./styles";
+import { Container, ActionButton } from "./styles";
 
 import AppStatus, { Killing, Starting, Stopping } from "~/entities/app-status";
 
@@ -26,7 +26,7 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
   const { name } = useRecoilValue(appState(appId));
 
   return (
-    <Header>
+    <Container>
       <h1>
         {name}
 
@@ -82,7 +82,7 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
           </ActionButton>
         </li>
       </ul>
-    </Header>
+    </Container>
   );
 };
 

@@ -1,7 +1,13 @@
 import styled from "styled-components";
 
+import { darken } from "@material-ui/core";
+import AppTheme from "~/styles/theme";
+
+const darkenPrimary = (theme: AppTheme) =>
+  darken(theme.palette.primary.main, 0.5);
+
 export const Container = styled.aside`
-  background: #562ad1;
+  background: ${(props) => props.theme.palette.primary.main};
   height: 100%;
 
   display: flex;
@@ -17,7 +23,7 @@ export const Logo = styled.span`
   flex-direction: column;
   justify-content: center;
 
-  border-bottom: 1px solid #3b1d8f;
+  border-bottom: 1px solid ${(props) => darkenPrimary(props.theme)};
 `;
 
 export const Nav = styled.nav`
@@ -26,8 +32,6 @@ export const Nav = styled.nav`
   flex-direction: column;
   justify-content: space-between;
 `;
-
-export const Items = styled.ul``;
 
 export type ItemProps = {
   selected?: boolean;
@@ -41,7 +45,8 @@ export const Item = styled.div<ItemProps>`
     padding: 12px;
     margin: 16px;
 
-    background: #562ad1;
+    /* background: #562ad1; */
+    background: ${(props) => props.theme.palette.primary.main};
 
     font-weight: bold;
 
@@ -50,7 +55,9 @@ export const Item = styled.div<ItemProps>`
     text-align: center;
 
     border-radius: 12px;
-    border: 1px solid ${(props) => (props.selected ? "#3b1d8f" : "transparent")};
+    border: 1px solid
+      ${(props) =>
+        props.selected ? darkenPrimary(props.theme) : "transparent"};
 
     filter: brightness(${(props) => (props.selected ? "80%" : "100%")});
 
@@ -69,6 +76,6 @@ export const Item = styled.div<ItemProps>`
   > a:hover {
     filter: brightness(80%);
 
-    border: 1px solid #3b1d8f;
+    border: 1px solid ${(props) => darkenPrimary(props.theme)};
   }
 `;

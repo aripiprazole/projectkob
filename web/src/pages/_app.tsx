@@ -7,12 +7,16 @@ import { RecoilRoot } from "recoil";
 
 import { GlobalStyle } from "~/styles";
 
+import { AppThemeProvider } from "~/components";
+
 const App: React.VFC<AppProps> = ({ Component, pageProps }) => {
   return (
     <RecoilRoot>
-      <Component {...pageProps} />
+      <AppThemeProvider>
+        <Component {...pageProps} />
 
-      <GlobalStyle />
+        <GlobalStyle />
+      </AppThemeProvider>
     </RecoilRoot>
   );
 };

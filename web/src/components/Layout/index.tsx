@@ -1,12 +1,12 @@
-import React, { ReactElement } from "react";
+import React, { Children, ReactElement } from "react";
 
 import Sidebar from "../Sidebar";
 
-import { Container, Content, Header } from "./styles";
+import { Container, Content, Header, MainWrapper } from "./styles";
 
 export type LayoutProps = {
   header?: ReactElement;
-  selected?: string;
+  selected?: "apps" | "profile" | "home";
 };
 
 const Layout: React.FC<LayoutProps> = ({ header, children, selected }) => {
@@ -15,9 +15,13 @@ const Layout: React.FC<LayoutProps> = ({ header, children, selected }) => {
       <Sidebar selected={selected} />
 
       <Content>
-        {header && <Header>{header}</Header>}
+        {header && (
+          <Header>
+            <div className="content">{header}</div>
+          </Header>
+        )}
 
-        <main>{children}</main>
+        <MainWrapper>{Children.only(children)}</MainWrapper>
       </Content>
     </Container>
   );

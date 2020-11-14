@@ -1,22 +1,16 @@
 import styled from "styled-components";
 
-export const Container = styled.div``;
+import { ShrinkContainer } from "~/styles/components";
 
-export const AppList = styled.ul`
+export const Container = styled(ShrinkContainer)``;
+
+export const Items = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 12px;
-
-  padding: 24px;
-
-  width: 100%;
-  max-width: 1200px;
-  margin: auto;
 `;
 
-export const AppListItem = styled.li``;
-
-export const AppItemLink = styled.a`
+export const AppLink = styled.a`
   padding: 16px 12px;
 
   display: grid;
@@ -26,7 +20,7 @@ export const AppItemLink = styled.a`
   border-bottom: 1px solid #ddd;
   border-radius: 8px;
 
-  background: #f9f9f9;
+  background: ${(props) => props.theme.palette.background.default};
 
   cursor: pointer;
 

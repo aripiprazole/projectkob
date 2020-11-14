@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 
-import dynamic from "next/dynamic";
 import { NextPage } from "next";
 
 import { useRecoilValue } from "recoil";

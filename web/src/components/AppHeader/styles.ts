@@ -1,13 +1,11 @@
-import { Button } from "@material-ui/core";
 import styled from "styled-components";
 
-export const Header = styled.div`
+import { Button } from "@material-ui/core";
+
+export const Container = styled.div`
   display: flex;
   justify-content: space-between;
-
-  width: 100%;
-  max-width: 1000px;
-  margin: auto;
+  flex-wrap: wrap;
 
   > h1 {
     display: flex;
@@ -21,6 +19,12 @@ export const Header = styled.div`
   > ul {
     display: flex;
     gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+  }
+
+  > ul > li {
+    height: 38px;
   }
 `;
 

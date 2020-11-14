@@ -5,7 +5,6 @@ const GlobalStyle = createGlobalStyle`
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
       'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
       'Helvetica Neue', sans-serif;
-    color: #333;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -19,10 +18,6 @@ const GlobalStyle = createGlobalStyle`
   #__next {
     height: 100%;
     min-width: 320px;
-  }
-
-  svg, svg * {
-    color: inherit;
   }
 
   ul,

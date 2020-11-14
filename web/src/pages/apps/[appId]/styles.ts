@@ -1,10 +1,8 @@
 import styled from "styled-components";
 
-export const Container = styled.form`
-  width: 100%;
-  max-width: 1000px;
-  margin: auto;
+import { ShrinkContainer } from "~/styles/components";
 
+export const Container = styled(ShrinkContainer)`
   > h3 {
     margin: 24px 0;
   }
