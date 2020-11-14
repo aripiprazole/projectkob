@@ -2,19 +2,19 @@ import React from "react";
 
 import Link from "next/link";
 
-import { FiCode, FiHome, FiMenu, FiUser } from "react-icons/fi";
+import { MdDashboard, MdHome, MdApps, MdPerson } from "react-icons/md";
 
 import { Container, Item, Items, Nav, Logo } from "./styles";
 
 export type SidebarProps = {
-  selected?: string;
+  selected?: "apps" | "profile" | "home";
 };
 
 const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
   return (
     <Container>
       <Logo>
-        <FiCode color="#eee" size={32} />
+        <MdDashboard color="#eee" size={32} />
       </Logo>
 
       <Nav>
@@ -23,7 +23,7 @@ const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
         <Item selected={selected === "profile"}>
           <Link href="/profile">
             <a>
-              <FiUser color="#eee" size={28} />
+              <MdPerson color="#eee" size={28} />
 
               <span>Profile</span>
             </a>
@@ -40,7 +40,7 @@ const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
       <Item selected={selected === "home"}>
         <Link href="/">
           <a>
-            <FiHome color="#eee" size={28} />
+            <MdHome color="#eee" size={28} />
 
             <span>Home</span>
           </a>
@@ -52,7 +52,7 @@ const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
       <Item selected={selected === "apps"}>
         <Link href="/apps">
           <a>
-            <FiMenu color="#eee" size={28} />
+            <MdApps color="#eee" size={28} />
 
             <span>Apps</span>
           </a>

@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { NextPage } from "next";
 
-import { FiServer } from "react-icons/fi";
+import { MdDns } from "react-icons/md";
 
 import { useRecoilValue } from "recoil";
 
@@ -35,7 +35,7 @@ const Content: React.VFC = () => {
           <Link href="/apps/[appId]" as={`/apps/${app.id}`}>
             <AppItemLink>
               <div className="icon">
-                <FiServer size={24} />
+                <MdDns size={18} />
               </div>
 
               <span className="name">{app.name}</span>

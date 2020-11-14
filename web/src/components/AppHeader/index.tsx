@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import { FiPower, FiPaperclip } from "react-icons/fi";
+import { MdPower, MdNote } from "react-icons/md";
 
 import { appState, appStatusState } from "~/store/apps";
 
@@ -15,21 +15,6 @@ import AppStatus, { Killing, Starting, Stopping } from "~/entities/app-status";
 const START_COLOR = "#15ed44";
 const STOP_COLOR = "#e36319";
 const KILL_COLOR = "#f0164c";
-
-function getColorByStatus(status: AppStatus): string {
-  switch (status.type) {
-    case "starting":
-    case "started":
-      return START_COLOR;
-    case "stopping":
-    case "stopped":
-      return STOP_COLOR;
-    case "killing":
-      return KILL_COLOR;
-    default:
-      return "";
-  }
-}
 
 type Props = {
   appId: string;
@@ -46,7 +31,7 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
         {name}
 
         <span>
-          <FiPower size={16} color={getColorByStatus(status)} />
+          <MdPower size={16} color={getColorByStatus(status)} />
         </span>
       </h1>
 
@@ -54,7 +39,7 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
         <li>
           <Link href="/apps/[appId]/logs" as={`/apps/${appId}/logs`}>
             <ActionButton color="secondary">
-              <FiPaperclip size={16} />
+              <MdNote size={16} />
 
               <span className="text">Logs</span>
             </ActionButton>
@@ -67,9 +52,9 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
             color={status.type === "deployed" ? "primary" : undefined}
             onClick={() => setStatus(Starting)}
           >
-            <FiPower size={16} />
+            <MdPower size={16} />
 
-            <span className="text">Start</span>
+            {status.type === "deployed" && <span className="text">Start</span>}
           </ActionButton>
         </li>
 
@@ -79,9 +64,9 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
             color={status.type === "started" ? "primary" : undefined}
             onClick={() => setStatus(Stopping)}
           >
-            <FiPower size={16} />
+            <MdPower size={16} />
 
-            <span className="text">Stop</span>
+            {status.type === "started" && <span className="text">Stop</span>}
           </ActionButton>
         </li>
 
@@ -91,14 +76,29 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
             color={status.type === "started" ? "primary" : undefined}
             onClick={() => setStatus(Killing)}
           >
-            <FiPower size={16} />
+            <MdPower size={16} />
 
-            <span className="text">Kill</span>
+            {status.type === "started" && <span className="text">Kill</span>}
           </ActionButton>
         </li>
       </ul>
     </Header>
   );
 };
+
+function getColorByStatus(status: AppStatus): string {
+  switch (status.type) {
+    case "starting":
+    case "started":
+      return START_COLOR;
+    case "stopping":
+    case "stopped":
+      return STOP_COLOR;
+    case "killing":
+      return KILL_COLOR;
+    default:
+      return "";
+  }
+}
 
 export default AppHeader;
