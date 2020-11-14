@@ -1,4 +1,4 @@
-import { atom, selector, selectorFamily } from "recoil";
+import { atom, atomFamily, selector, selectorFamily } from "recoil";
 
 import { App } from "~/entities";
 
@@ -22,4 +22,17 @@ export const appState = selectorFamily({
 export const appStatusState = atom({
   key: "appStatusState",
   default: None,
+});
+
+export const appLogsState = atomFamily({
+  key: "appLogsState",
+  default: [
+    "\u001b[31m[INFO] Starting...",
+    "[INFO] Starting service -> X...",
+    "[INFO] Starting service -> Y...",
+    "[INFO] Starting service -> Z...",
+    "[INFO] Started...",
+    "[INFO] Receiving request in /",
+    "[ERROR] Error",
+  ],
 });
