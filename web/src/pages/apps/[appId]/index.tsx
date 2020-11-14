@@ -9,9 +9,9 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { MdPublish } from "react-icons/md";
 
-import { None } from "~/entities/app-status";
+import { Deploy } from "~/entities/app-status";
 
-import { appState, appStatusState } from "~/store/apps";
+import { appState, appIsStartedState, appStatusState } from "~/store/apps";
 
 import { Layout, Loading, AppHeader } from "~/components";
 
@@ -43,6 +43,7 @@ type Props = {
 };
 
 const AppDetails: React.VFC<Props> = ({ appId }) => {
+  const isStarted = useRecoilValue(appIsStartedState);
   const setStatus = useSetRecoilState(appStatusState);
 
   const { id, name, repo } = useRecoilValue(appState(appId));
@@ -77,10 +78,12 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
             value={repo}
           />
 
-          <Button onClick={() => setStatus(None)}>
-            <MdPublish size={16} />
-            Deploy
-          </Button>
+          <Suspense fallback={<div>LOADING </div>}>
+            <Button disabled={isStarted} onClick={() => setStatus(Deploy())}>
+              <MdPublish size={16} />
+              Deploy
+            </Button>
+          </Suspense>
         </Fieldset>
       </form>
     </Container>

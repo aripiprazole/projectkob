@@ -2,7 +2,12 @@ import { atom, atomFamily, selector, selectorFamily } from "recoil";
 
 import { App } from "~/entities";
 
-import { None } from "~/entities/app-status";
+import AppStatus, {
+  Deployed,
+  None,
+  Started,
+  Stopped,
+} from "~/entities/app-status";
 
 export const appListState = selector({
   key: "appsListState",
@@ -19,9 +24,43 @@ export const appState = selectorFamily({
   get: () => async ({ get }) => get(appListState)[0]!!,
 });
 
-export const appStatusState = atom({
-  key: "appStatusState",
+export const currentAppStatusState = atom({
+  key: "currentAppStatusState",
   default: None,
+});
+
+export const appIsStartedState = selector({
+  key: "appStatusIsStartedState",
+  get: ({ get }) => {
+    const state = get(appStatusState);
+
+    return (
+      state.type !== "stopped" &&
+      state.type !== "start" &&
+      state.type !== "deployed" &&
+      state.type !== "none" &&
+      state.type !== "deploy"
+    );
+  },
+});
+
+export const appStatusState = selector<AppStatus>({
+  key: "appStatusState",
+  get: async ({ get }) => get(currentAppStatusState),
+  set: async ({ set }, status) => {
+    if ("__tag" in status) return;
+
+    switch (status.type) {
+      case "deploy":
+        return set(currentAppStatusState, Deployed);
+      case "start":
+        return set(currentAppStatusState, Started);
+      case "stop":
+        return set(currentAppStatusState, Stopped(9));
+      case "kill":
+        return set(currentAppStatusState, Stopped(0));
+    }
+  },
 });
 
 export const appLogsState = atomFamily({

@@ -10,7 +10,7 @@ import { appState, appStatusState } from "~/store/apps";
 
 import { Container, ActionButton } from "./styles";
 
-import AppStatus, { Killing, Starting, Stopping } from "~/entities/app-status";
+import AppStatus, { Kill, Start, Stop } from "~/entities/app-status";
 
 const START_COLOR = "#15ed44";
 const STOP_COLOR = "#e36319";
@@ -50,7 +50,7 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
           <ActionButton
             disabled={status.type !== "deployed"}
             color={status.type === "deployed" ? "primary" : undefined}
-            onClick={() => setStatus(Starting)}
+            onClick={() => setStatus(Start)}
           >
             <MdPower size={16} />
 
@@ -62,7 +62,7 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
           <ActionButton
             disabled={status.type !== "started"}
             color={status.type === "started" ? "primary" : undefined}
-            onClick={() => setStatus(Stopping)}
+            onClick={() => setStatus(Stop)}
           >
             <MdPower size={16} />
 
@@ -74,7 +74,7 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
           <ActionButton
             disabled={status.type !== "started"}
             color={status.type === "started" ? "primary" : undefined}
-            onClick={() => setStatus(Killing)}
+            onClick={() => setStatus(Kill)}
           >
             <MdPower size={16} />
 
@@ -88,13 +88,13 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
 
 function getColorByStatus(status: AppStatus): string {
   switch (status.type) {
-    case "starting":
+    case "start":
     case "started":
       return START_COLOR;
-    case "stopping":
+    case "stop":
     case "stopped":
       return STOP_COLOR;
-    case "killing":
+    case "kill":
       return KILL_COLOR;
     default:
       return "";

@@ -38,6 +38,7 @@ const Content: React.VFC<Props> = ({ appId }) => {
     <Container>
       {logs.map((log) => (
         <div
+          key={log}
           dangerouslySetInnerHTML={{
             __html: ansiUp.ansi_to_html(log + RESET_COLOR),
           }}

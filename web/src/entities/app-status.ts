@@ -1,11 +1,12 @@
 type AppStatusType = {
   type:
+    | "start"
+    | "stop"
+    | "deploy"
+    | "kill"
     | "none"
     | "stopped"
-    | "stopping"
-    | "killing"
     | "started"
-    | "starting"
     | "deployed";
 };
 
@@ -16,27 +17,39 @@ type StoppedType = AppStatusType & {
 
 type AppStatus = StoppedType | AppStatusType;
 
-export const Starting: AppStatus = {
-  type: "starting",
+// actions
+
+export const Start: AppStatus = {
+  type: "start",
 };
+
+export const Stop: AppStatus = {
+  type: "stop",
+};
+
+export const Kill: AppStatus = {
+  type: "kill",
+};
+
+export const Deploy = (): AppStatus => ({
+  type: "deploy",
+});
+
+// states
 
 export const None: AppStatus = {
   type: "none",
 };
 
-export const Stopping: AppStatus = {
-  type: "stopping",
-};
-
-export const Killing: AppStatus = {
-  type: "killing",
-};
-
 export const Started: AppStatus = {
-  type: "starting",
+  type: "started",
 };
 
-export const Stopped = (code: number): StoppedType => ({
+export const Deployed: AppStatus = {
+  type: "deployed",
+};
+
+export const Stopped = (code: number): AppStatus => ({
   type: "stopped",
   code,
 });
