@@ -1,8 +1,17 @@
 import styled from "styled-components";
 
+import { Button } from "@material-ui/core";
+
 import { ShrinkContainer } from "~/styles/components";
 
-export const Container = styled(ShrinkContainer)``;
+export const Container = styled(ShrinkContainer)`
+  display: flex;
+`;
+
+export const ItemsWrapper = styled.div`
+  position: relative;
+  flex: 1;
+`;
 
 export const Items = styled.ul`
   display: flex;
@@ -11,7 +20,7 @@ export const Items = styled.ul`
 `;
 
 export const AppLink = styled.a`
-  padding: 16px 12px;
+  padding: 20px 12px;
 
   display: grid;
   grid-template-columns: 48px 1fr;
@@ -43,4 +52,16 @@ export const AppLink = styled.a`
   > svg * {
     color: #333;
   }
+`;
+
+export const CreateAppButton = styled(Button).attrs({
+  variant: "contained",
+  color: "primary",
+})`
+  padding: 16px !important;
+  border-radius: 50% !important;
+
+  position: absolute !important;
+  right: 0;
+  bottom: 0;
 `;

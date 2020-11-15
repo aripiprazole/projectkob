@@ -3,24 +3,39 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { NextPage } from "next";
 
-import { MdDns } from "react-icons/md";
+import { MdDns, MdAdd } from "react-icons/md";
 
 import { useRecoilValue } from "recoil";
 
 import { appListState } from "~/store/apps";
 
+import { authorized } from "~/utils";
+
 import { Layout } from "~/components";
 
-import { Container, Items, AppLink } from "./styles";
-import { authorized } from "~/utils";
+import {
+  Container,
+  Items,
+  AppLink,
+  CreateAppButton,
+  ItemsWrapper,
+} from "./styles";
 
 const Page: NextPage = () => {
   return (
     <Layout selected="apps" header={<h1>Apps</h1>}>
       <Container>
-        <Suspense fallback="Loading...">
-          <Content />
-        </Suspense>
+        <ItemsWrapper>
+          <Suspense fallback="Loading...">
+            <Content />
+          </Suspense>
+
+          <Link href="/apps/new">
+            <CreateAppButton>
+              <MdAdd size={32} />
+            </CreateAppButton>
+          </Link>
+        </ItemsWrapper>
       </Container>
     </Layout>
   );
