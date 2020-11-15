@@ -9,24 +9,43 @@ import AppStatus, {
   Stopped,
 } from "~/entities/app-status";
 
-export const appListState = selector({
-  key: "appsListState",
-  get: async () => [
-    new App("43rnr2", "projectkob", "https://github.com/LorenzooG/projectkob"),
-    new App("rn3r9q", "happy", "https://github.com/LorenzooG/happy-nlw"),
-    new App("m1r1aa", "gitkib", "https://github.com/LorenzooG/gitkib"),
-    new App("fn3729", "zipzopp", "https://github.com/LorenzooG/zipzop"),
-  ],
+import { appsServiceState } from "~/services";
+
+export const appListState = atom({
+  key: "appListState",
+  default: selector({
+    key: "appListState/default",
+    get: ({ get }) => get(appsServiceState).findAllApps(),
+  }),
 });
 
 export const appState = selectorFamily({
   key: "appState",
-  get: () => async ({ get }) => get(appListState)[0]!!,
+  get: (id: string) => ({ get }) => get(appsServiceState).findAppById(id),
 });
 
-export const currentAppStatusState = atom({
-  key: "currentAppStatusState",
+const _appStatusState = atom({
+  key: "_appStatusState",
   default: None,
+});
+
+export const appStatusState = selector<AppStatus>({
+  key: "appStatusState",
+  get: async ({ get }) => get(_appStatusState),
+  set: async ({ set }, status) => {
+    if ("__tag" in status) return;
+
+    switch (status.type) {
+      case "deploy":
+        return set(_appStatusState, Deployed);
+      case "start":
+        return set(_appStatusState, Started);
+      case "stop":
+        return set(_appStatusState, Stopped(9));
+      case "kill":
+        return set(_appStatusState, Stopped(0));
+    }
+  },
 });
 
 export const appIsStartedState = selector({
@@ -41,25 +60,6 @@ export const appIsStartedState = selector({
       state.type !== "none" &&
       state.type !== "deploy"
     );
-  },
-});
-
-export const appStatusState = selector<AppStatus>({
-  key: "appStatusState",
-  get: async ({ get }) => get(currentAppStatusState),
-  set: async ({ set }, status) => {
-    if ("__tag" in status) return;
-
-    switch (status.type) {
-      case "deploy":
-        return set(currentAppStatusState, Deployed);
-      case "start":
-        return set(currentAppStatusState, Started);
-      case "stop":
-        return set(currentAppStatusState, Stopped(9));
-      case "kill":
-        return set(currentAppStatusState, Stopped(0));
-    }
   },
 });
 

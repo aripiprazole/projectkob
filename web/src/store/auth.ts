@@ -1,27 +1,18 @@
 import { selector } from "recoil";
 
-import { authorizationHeader } from "~/utils";
-
-import { User } from "~/entities";
-
-import { api } from "~/services";
-
-type OAuth2Response = {
-  accessToken: string;
-};
+import { authServiceState } from "~/services";
 
 export const loggedUserState = selector({
   key: "loggedUserState",
   get: async ({ get }) => {
-    try {
-      const response = await api.get("/user", {
-        headers: authorizationHeader(get),
-      });
+    return await get(authServiceState).findLoggedUser();
+  },
+});
 
-      return User.of(response.data);
-    } catch (error) {
-      return null;
-    }
+export const loggedUserReposState = selector({
+  key: "loggedUserReposState",
+  get: async ({ get }) => {
+    return await get(authServiceState).findLoggedUserRepos();
   },
 });
 
@@ -32,20 +23,17 @@ export const authenticationTokenState = selector({
     return localStorage.getItem("authorizationToken");
   },
 
-  set: async ({}, temporaryCode) => {
-    try {
-      const response = await api.get<OAuth2Response>(
-        `/login?code=${temporaryCode}&state=none`
-      );
-      const authenticationToken = response.data.accessToken;
+  set: async ({ get }, temporaryCode) => {
+    if (!temporaryCode) return;
 
-      if (!authenticationToken) return;
+    try {
+      const authenticationToken = await get(authServiceState).findTokenByCode(
+        temporaryCode.toString()
+      );
 
       return localStorage.setItem("authorizationToken", authenticationToken);
     } catch (error) {
-      console.error("An unexpected error ocurred fetching accessToken", error);
-
-      return;
+      console.error("An unexpected error ocurred fetching accessToken:", error);
     }
   },
 });
