@@ -19,6 +19,7 @@ export const MainWrapper = styled.div`
   padding: 24px;
   height: 100%;
   width: 100%;
+  display: flex;
 `;
 
 export const Header = styled.header`

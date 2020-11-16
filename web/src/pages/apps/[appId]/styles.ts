@@ -1,8 +1,17 @@
 import styled from "styled-components";
 
+import {
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialActionProps,
+} from "@material-ui/lab";
+
 import { ShrinkContainer } from "~/styles/components";
+import { green } from "@material-ui/core/colors";
 
 export const Container = styled(ShrinkContainer)`
+  position: relative;
+
   > h3 {
     margin: 24px 0;
   }
@@ -28,4 +37,11 @@ export const Fieldset = styled.fieldset`
   > .MuiTextField-root {
     flex: 1;
   }
+`;
+
+export const StyledSpeedDial = styled(SpeedDial)`
+  width: fit-content;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 `;

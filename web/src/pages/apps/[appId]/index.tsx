@@ -1,23 +1,47 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 
 import { Button, TextField } from "@material-ui/core";
 
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  SpeedDialAction,
+  SpeedDialActionProps,
+  SpeedDialIcon,
+} from "@material-ui/lab";
 
-import { MdPublish } from "react-icons/md";
+import {
+  useRecoilCallback,
+  useRecoilStateLoadable,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
+
+import { MdClose, MdDelete, MdEdit, MdPublish } from "react-icons/md";
 
 import { Deploy } from "~/entities/app-status";
 
 import { authorized } from "~/utils";
 
-import { appState, appIsStartedState, appStatusState } from "~/store/apps";
+import { appsServiceState } from "~/services";
 
-import { Layout, Loading, AppHeader, LoadingButton } from "~/components";
+import {
+  appState,
+  appIsStartedState,
+  appStatusState,
+  appListState,
+} from "~/store/apps";
 
-import { Container, Fieldset } from "./styles";
+import {
+  Layout,
+  Loading,
+  AppHeader,
+  LoadingButton,
+  LoadingIcon,
+} from "~/components";
+
+import { Container, Fieldset, StyledSpeedDial } from "./styles";
 
 const Page: NextPage = () => {
   const { appId = "" } = useRouter().query;
@@ -45,6 +69,8 @@ type Props = {
 };
 
 const AppDetails: React.VFC<Props> = ({ appId }) => {
+  const [speedDialOpen, setSpeedDialOpen] = useState(false);
+
   const { id, name, repository: repo } = useRecoilValue(appState(appId));
 
   return (
@@ -88,7 +114,62 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
           </Suspense>
         </Fieldset>
       </form>
+
+      <StyledSpeedDial
+        ariaLabel="App actions"
+        icon={
+          <SpeedDialIcon
+            icon={<MdEdit size={24} />}
+            openIcon={<MdClose size={24} />}
+          />
+        }
+        onClose={() => setSpeedDialOpen(false)}
+        onOpen={() => setSpeedDialOpen(true)}
+        open={speedDialOpen}
+      >
+        <DeleteAction appId={id} />
+      </StyledSpeedDial>
     </Container>
+  );
+};
+
+type DeleteActionProps = SpeedDialActionProps & {
+  appId: string;
+};
+
+const DeleteAction: React.VFC<DeleteActionProps> = ({ appId, ...props }) => {
+  const [loading, setLoading] = useState(false);
+
+  const appsService = useRecoilValue(appsServiceState);
+  const router = useRouter();
+
+  const [appList, setAppList] = useRecoilStateLoadable(appListState);
+
+  const deleteApp = useRecoilCallback(() => async () => {
+    if (loading) return;
+
+    setLoading(true);
+
+    appsService.deleteAppById(appId);
+
+    setAppList((apps) => apps.filter((app) => app.id !== appId));
+    setLoading(false);
+
+    router.push("/apps");
+  });
+
+  return (
+    <SpeedDialAction
+      {...props}
+      tooltipTitle="Delete"
+      icon={
+        <LoadingIcon loading={loading || appList.state === "loading"}>
+          <MdDelete size={20} />
+        </LoadingIcon>
+      }
+      tooltipOpen
+      onClick={appList.state === "loading" ? deleteApp : undefined}
+    />
   );
 };
 

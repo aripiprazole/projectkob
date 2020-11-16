@@ -28,6 +28,10 @@ class AppsService {
     );
   }
 
+  public async deleteAppById(appId: string): Promise<void> {
+    await this.http.delete(`/apps/${appId}`);
+  }
+
   public async createNewApp(data: CreateNewAppDto): Promise<App> {
     const response = await this.http.post("/apps", data);
 
