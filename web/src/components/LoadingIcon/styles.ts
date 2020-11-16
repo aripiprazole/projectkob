@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 type ContainerProps = {
   disabled: boolean;
-  success: boolean;
 };
 
 export const Container = styled.div<ContainerProps>`

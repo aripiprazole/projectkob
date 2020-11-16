@@ -4,18 +4,26 @@ import { NextPage } from "next";
 
 import { useRecoilValue } from "recoil";
 
+import { CircularProgress } from "@material-ui/core";
+
 import { authorized } from "~/utils";
 
 import { loggedUserState } from "~/store/auth";
 
 import { Layout } from "~/components";
 
-import { Container } from "./styles";
+import { Container, LoadingWrapper } from "./styles";
 
 const Page: NextPage = () => {
   return (
     <Layout selected="home" header={<h1>Home</h1>}>
-      <Suspense fallback="Loading...">
+      <Suspense
+        fallback={
+          <LoadingWrapper>
+            <CircularProgress size={48} />
+          </LoadingWrapper>
+        }
+      >
         <Content />
       </Suspense>
     </Layout>

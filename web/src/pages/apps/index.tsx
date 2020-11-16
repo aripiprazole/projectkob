@@ -7,6 +7,8 @@ import { MdDns, MdAdd } from "react-icons/md";
 
 import { useRecoilValue } from "recoil";
 
+import { Alert, AlertTitle, Skeleton } from "@material-ui/lab";
+
 import { appListState } from "~/store/apps";
 
 import { authorized } from "~/utils";
@@ -21,14 +23,13 @@ import {
   CreateAppLink,
   ItemsWrapper,
 } from "./styles";
-import { Alert, AlertTitle } from "@material-ui/lab";
 
 const Page: NextPage = () => {
   return (
     <Layout selected="apps" header={<h1>Apps</h1>}>
       <Container>
         <ItemsWrapper>
-          <Suspense fallback="Loading...">
+          <Suspense fallback={<AppsLoading />}>
             <Content />
           </Suspense>
 
@@ -79,5 +80,15 @@ const Content: React.VFC = () => {
     </Items>
   );
 };
+
+const AppsLoading = () => (
+  <Items>
+    {Array.from(new Array(5)).map((id) => (
+      <li key={id}>
+        <Skeleton variant="rect" width="100%" height={61} />
+      </li>
+    ))}
+  </Items>
+);
 
 export default authorized(Page);

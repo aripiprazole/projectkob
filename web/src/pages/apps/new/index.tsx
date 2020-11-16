@@ -1,46 +1,75 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useState } from "react";
 
+import { useRouter } from "next/router";
 import { NextPage } from "next";
 
-import { useRecoilCallback, useRecoilValue } from "recoil";
+import {
+  useRecoilCallback,
+  useRecoilStateLoadable,
+  useRecoilValue,
+} from "recoil";
 
-import { MenuItem, TextField } from "@material-ui/core";
+import { CircularProgress, MenuItem, TextField } from "@material-ui/core";
+import { green, red } from "@material-ui/core/colors";
 
 import { FiGithub } from "react-icons/fi";
-import { MdLock } from "react-icons/md";
+import { MdArrowBack, MdError, MdLock } from "react-icons/md";
 
 import { loggedUserReposState } from "~/store/auth";
 import { appListState } from "~/store/apps";
 
+import { App } from "~/entities";
 import { appsServiceState } from "~/services";
 
 import { Layout, Loading, LoadingButton } from "~/components";
 
-import { Container, RepoItem } from "./styles";
+import { Container, RepoItem, ButtonContent, ProgressWrapper } from "./styles";
 
 const Page: NextPage = () => {
+  const [appList, setAppList] = useRecoilStateLoadable(appListState);
+
   const [appName, setAppName] = useState(generateAppName());
   const [appRepo, setAppRepo] = useState("");
 
-  const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
+  const [success, setSuccess] = useState(false);
+  const [app, setApp] = useState<App>();
 
+  const router = useRouter();
   const appsService = useRecoilValue(appsServiceState);
 
-  const createNewApp = useRecoilCallback(({ set }) => async () => {
+  useEffect(() => {
+    if (appList.state === "hasError") throw appList.contents;
+  }, [appList.state]);
+
+  const createNewApp = useRecoilCallback(() => async () => {
+    if (loading) return;
+
     setLoading(true);
+
     try {
       const newApp = await appsService.createNewApp({
         name: appName,
         repository: appRepo,
       });
 
-      set(appListState, (apps) => [...apps, newApp]);
+      if (appList.state === "hasValue") {
+        setAppList((apps) => [...apps, newApp]);
+      }
+
+      setApp(newApp);
+      setSuccess(true);
     } catch (error) {
       setError(error);
     }
+
     setLoading(false);
   });
+
+  const backToApps = useCallback(() => {
+    router.push(`/apps/${app?.id}`);
+  }, [router, app]);
 
   return (
     <Layout header={<h1>Creating app</h1>}>
@@ -62,7 +91,9 @@ const Page: NextPage = () => {
                 variant="outlined"
                 color="primary"
               >
-                <Loading />
+                <ProgressWrapper>
+                  <CircularProgress />
+                </ProgressWrapper>
               </TextField>
             }
           >
@@ -71,8 +102,26 @@ const Page: NextPage = () => {
 
           <LoadingButton
             loading={loading}
-            onClick={createNewApp}
-            color="primary"
+            success={success}
+            successColor={green[500]}
+            successContent={
+              <ButtonContent>
+                <MdArrowBack size={22} />
+
+                <div className="text">Access app</div>
+              </ButtonContent>
+            }
+            error={Boolean(error)}
+            errorColor={red[500]}
+            errorContent={
+              <ButtonContent>
+                <MdError size={22} />
+
+                <div className="text">Retry</div>
+              </ButtonContent>
+            }
+            onClick={success ? backToApps : createNewApp}
+            color={"primary"}
             variant="outlined"
             size="large"
           >
@@ -99,12 +148,7 @@ const RepoField: React.VFC<Props> = ({ appRepo, setAppRepo }) => {
       label="Repository"
       color="primary"
       value={appRepo}
-      onChange={(event) => {
-        console.log("event", event);
-        console.log("value", event.target.value);
-
-        setAppRepo(event.target.value);
-      }}
+      onChange={(event) => setAppRepo(event.target.value)}
     >
       {loggedUserRepos.map((repo) => (
         <MenuItem key={repo.id} value={repo.name}>

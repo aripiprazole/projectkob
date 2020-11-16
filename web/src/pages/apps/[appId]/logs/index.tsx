@@ -9,17 +9,24 @@ import AnsiUp from "ansi_up";
 
 import { authorized } from "~/utils";
 
-import { Loading } from "~/components";
-
 import { appLogsState } from "~/store/apps";
 
-import { Container } from "./styles";
+import { Container, LoadingWrapper } from "./styles";
+import { CircularProgress } from "@material-ui/core";
 
 const Page: NextPage = () => {
   const { appId = "" } = useRouter().query;
 
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense
+      fallback={
+        <LoadingWrapper>
+          <div className="progress-wrapper">
+            <CircularProgress color="inherit" />
+          </div>
+        </LoadingWrapper>
+      }
+    >
       <Content appId={appId.toString()} />
     </Suspense>
   );

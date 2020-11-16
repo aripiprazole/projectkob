@@ -12,18 +12,11 @@ export type LoadingItemProps = {
 
 const LoadingIcon: React.FC<LoadingItemProps> = ({
   loading = false,
-  success = false,
   children,
 }) => {
   return (
-    <Container disabled={success || loading} success={success}>
+    <Container disabled={loading}>
       <div className="content">{Children.only(children)}</div>
-
-      {success && (
-        <FabProgress>
-          <MdCheck size={18} />
-        </FabProgress>
-      )}
 
       {loading && (
         <FabProgress>

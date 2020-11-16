@@ -1,13 +1,8 @@
 import styled from "styled-components";
 
-import {
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialActionProps,
-} from "@material-ui/lab";
+import { Skeleton, SpeedDial } from "@material-ui/lab";
 
 import { ShrinkContainer } from "~/styles/components";
-import { green } from "@material-ui/core/colors";
 
 export const Container = styled(ShrinkContainer)`
   position: relative;
@@ -28,6 +23,7 @@ export const Container = styled(ShrinkContainer)`
 
 export const Fieldset = styled.fieldset`
   display: flex;
+  align-items: center;
   gap: 12px;
 
   border: none;
@@ -41,6 +37,12 @@ export const Fieldset = styled.fieldset`
 
 export const StyledSpeedDial = styled(SpeedDial)`
   width: fit-content;
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+`;
+
+export const LoadingSpeedDial = styled(Skeleton)`
   position: absolute;
   bottom: 0;
   right: 0;

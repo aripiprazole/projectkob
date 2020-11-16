@@ -26,3 +26,18 @@ export const RepoItem = styled.div`
     overflow: hidden;
   }
 `;
+
+export const ProgressWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ButtonContent = styled.div`
+  display: flex;
+  align-items: center;
+
+  > .text {
+    margin-left: 12px;
+  }
+`;

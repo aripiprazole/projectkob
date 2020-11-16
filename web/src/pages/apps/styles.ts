@@ -61,9 +61,9 @@ export const CreateAppButton = styled(Button).attrs({
   padding: 16px !important;
   border-radius: 50% !important;
 
-  position: absolute !important;
-  right: 0;
-  bottom: 0;
+  position: fixed !important;
+  right: 32px;
+  bottom: 32px;
 `;
 
 export const CreateAppLink = styled.a`

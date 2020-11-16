@@ -98,4 +98,6 @@ function getColorByStatus(status: AppStatus): string {
   }
 }
 
+export { default as AppHeaderLoading } from "./Loading";
+
 export default AppHeader;
