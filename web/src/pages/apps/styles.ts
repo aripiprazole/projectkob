@@ -65,3 +65,12 @@ export const CreateAppButton = styled(Button).attrs({
   right: 0;
   bottom: 0;
 `;
+
+export const CreateAppLink = styled.a`
+  color: ${(props) => props.theme.palette.text.primary};
+  cursor: pointer;
+
+  :hover {
+    text-decoration: underline;
+  }
+`;

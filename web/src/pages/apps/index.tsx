@@ -18,8 +18,10 @@ import {
   Items,
   AppLink,
   CreateAppButton,
+  CreateAppLink,
   ItemsWrapper,
 } from "./styles";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 const Page: NextPage = () => {
   return (
@@ -43,6 +45,21 @@ const Page: NextPage = () => {
 
 const Content: React.VFC = () => {
   const apps = useRecoilValue(appListState);
+
+  if (apps.length < 1) {
+    return (
+      <Alert severity="info">
+        <AlertTitle>No apps found</AlertTitle>
+        You can create a new app creating in the button in the bottom right
+        corner or{" "}
+        <strong>
+          <Link href="/apps/new">
+            <CreateAppLink>here</CreateAppLink>
+          </Link>
+        </strong>
+      </Alert>
+    );
+  }
 
   return (
     <Items>

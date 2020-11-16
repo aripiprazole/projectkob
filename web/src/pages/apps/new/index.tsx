@@ -4,7 +4,7 @@ import { NextPage } from "next";
 
 import { useRecoilCallback, useRecoilValue } from "recoil";
 
-import { Button, MenuItem, TextField } from "@material-ui/core";
+import { MenuItem, TextField } from "@material-ui/core";
 
 import { FiGithub } from "react-icons/fi";
 import { MdLock } from "react-icons/md";
@@ -14,7 +14,7 @@ import { appListState } from "~/store/apps";
 
 import { appsServiceState } from "~/services";
 
-import { Layout, Loading } from "~/components";
+import { Layout, Loading, LoadingButton } from "~/components";
 
 import { Container, RepoItem } from "./styles";
 
@@ -22,15 +22,24 @@ const Page: NextPage = () => {
   const [appName, setAppName] = useState(generateAppName());
   const [appRepo, setAppRepo] = useState("");
 
+  const [error, setError] = useState<Error>();
+  const [loading, setLoading] = useState(false);
+
   const appsService = useRecoilValue(appsServiceState);
 
   const createNewApp = useRecoilCallback(({ set }) => async () => {
-    const newApp = await appsService.createNewApp({
-      name: appName,
-      repository: appRepo,
-    });
+    setLoading(true);
+    try {
+      const newApp = await appsService.createNewApp({
+        name: appName,
+        repository: appRepo,
+      });
 
-    set(appListState, (apps) => [...apps, newApp]);
+      set(appListState, (apps) => [...apps, newApp]);
+    } catch (error) {
+      setError(error);
+    }
+    setLoading(false);
   });
 
   return (
@@ -60,14 +69,15 @@ const Page: NextPage = () => {
             <RepoField appRepo={appRepo} setAppRepo={setAppRepo} />
           </Suspense>
 
-          <Button
+          <LoadingButton
+            loading={loading}
             onClick={createNewApp}
             color="primary"
             variant="outlined"
             size="large"
           >
             Create
-          </Button>
+          </LoadingButton>
         </form>
       </Container>
     </Layout>

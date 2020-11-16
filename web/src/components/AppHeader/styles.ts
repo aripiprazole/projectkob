@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Button } from "@material-ui/core";
+import { LoadingButton } from "~/components";
 
 export const Container = styled.div`
   display: flex;
@@ -25,10 +25,11 @@ export const Container = styled.div`
 
   > ul > li {
     height: 38px;
+    display: flex;
   }
 `;
 
-export const ActionButton = styled(Button).attrs({
+export const ActionButton = styled(LoadingButton).attrs({
   variant: "outlined",
 })`
   cursor: pointer;

@@ -15,7 +15,7 @@ import { authorized } from "~/utils";
 
 import { appState, appIsStartedState, appStatusState } from "~/store/apps";
 
-import { Layout, Loading, AppHeader } from "~/components";
+import { Layout, Loading, AppHeader, LoadingButton } from "~/components";
 
 import { Container, Fieldset } from "./styles";
 
@@ -45,9 +45,6 @@ type Props = {
 };
 
 const AppDetails: React.VFC<Props> = ({ appId }) => {
-  const isStarted = useRecoilValue(appIsStartedState);
-  const setStatus = useSetRecoilState(appStatusState);
-
   const { id, name, repository: repo } = useRecoilValue(appState(appId));
 
   return (
@@ -79,16 +76,31 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
             variant="outlined"
             value={repo}
           />
-
-          <Suspense fallback={<div>LOADING </div>}>
-            <Button disabled={isStarted} onClick={() => setStatus(Deploy())}>
-              <MdPublish size={16} />
-              Deploy
-            </Button>
+          <Suspense
+            fallback={
+              <LoadingButton loading>
+                <MdPublish size={16} />
+                Deploy
+              </LoadingButton>
+            }
+          >
+            <DeployButton />
           </Suspense>
         </Fieldset>
       </form>
     </Container>
+  );
+};
+
+const DeployButton: React.VFC = () => {
+  const isStarted = useRecoilValue(appIsStartedState);
+  const setStatus = useSetRecoilState(appStatusState);
+
+  return (
+    <Button disabled={isStarted} onClick={() => setStatus(Deploy())}>
+      <MdPublish size={16} />
+      Deploy
+    </Button>
   );
 };
 

@@ -21,9 +21,11 @@ class AppsService {
   }
 
   public async findAppById(_appId: string): Promise<App> {
-    const apps = await this.findAllApps();
-
-    return apps[0]!!;
+    return new App(
+      "33rn239fn",
+      "projectkob",
+      "https://github.com/LorenzooG/projectkob"
+    );
   }
 
   public async createNewApp(data: CreateNewAppDto): Promise<App> {

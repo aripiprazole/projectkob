@@ -1,16 +1,25 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import Link from "next/link";
 
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
+
+import { CircularProgress } from "@material-ui/core";
 
 import { MdPower, MdNote } from "react-icons/md";
+
+import AppStatus from "~/entities/app-status";
 
 import { appState, appStatusState } from "~/store/apps";
 
 import { Container, ActionButton } from "./styles";
 
-import AppStatus, { Kill, Start, Stop } from "~/entities/app-status";
+import {
+  ActionButtonLoading,
+  KillButton,
+  StartButton,
+  StopButton,
+} from "./actions";
 
 const START_COLOR = "#15ed44";
 const STOP_COLOR = "#e36319";
@@ -21,8 +30,6 @@ type Props = {
 };
 
 const AppHeader: React.VFC<Props> = ({ appId }) => {
-  const [status, setStatus] = useRecoilState(appStatusState);
-
   const { name } = useRecoilValue(appState(appId));
 
   return (
@@ -31,7 +38,9 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
         {name}
 
         <span>
-          <MdPower size={16} color={getColorByStatus(status)} />
+          <Suspense fallback={<CircularProgress size={16} />}>
+            <AppStatusBadge />
+          </Suspense>
         </span>
       </h1>
 
@@ -47,43 +56,31 @@ const AppHeader: React.VFC<Props> = ({ appId }) => {
         </li>
 
         <li>
-          <ActionButton
-            disabled={status.type !== "deployed"}
-            color={status.type === "deployed" ? "primary" : undefined}
-            onClick={() => setStatus(Start)}
-          >
-            <MdPower size={16} />
-
-            {status.type === "deployed" && <span className="text">Start</span>}
-          </ActionButton>
+          <Suspense fallback={<ActionButtonLoading>Start</ActionButtonLoading>}>
+            <StartButton />
+          </Suspense>
         </li>
 
         <li>
-          <ActionButton
-            disabled={status.type !== "started"}
-            color={status.type === "started" ? "primary" : undefined}
-            onClick={() => setStatus(Stop)}
-          >
-            <MdPower size={16} />
-
-            {status.type === "started" && <span className="text">Stop</span>}
-          </ActionButton>
+          <Suspense fallback={<ActionButtonLoading>Stop</ActionButtonLoading>}>
+            <StopButton />
+          </Suspense>
         </li>
 
         <li>
-          <ActionButton
-            disabled={status.type !== "started"}
-            color={status.type === "started" ? "primary" : undefined}
-            onClick={() => setStatus(Kill)}
-          >
-            <MdPower size={16} />
-
-            {status.type === "started" && <span className="text">Kill</span>}
-          </ActionButton>
+          <Suspense fallback={<ActionButtonLoading>Kill</ActionButtonLoading>}>
+            <KillButton />
+          </Suspense>
         </li>
       </ul>
     </Container>
   );
+};
+
+const AppStatusBadge: React.VFC = () => {
+  const status = useRecoilValue(appStatusState);
+
+  return <MdPower size={16} color={getColorByStatus(status)} />;
 };
 
 function getColorByStatus(status: AppStatus): string {

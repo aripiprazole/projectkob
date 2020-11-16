@@ -4,12 +4,12 @@ import { ButtonProps, CircularProgress } from "@material-ui/core";
 
 import { ButtonProgress, Container, StyledButton } from "./styles";
 
-type Props = ButtonProps & {
+export type LoadingButtonProps = ButtonProps & {
   loading?: boolean;
   progressSize?: number;
 };
 
-const LoadingButton: React.FC<Props> = ({
+const LoadingButton: React.FC<LoadingButtonProps> = ({
   loading,
   progressSize = 24,
   ...props
