@@ -1,12 +1,13 @@
-import React, { Suspense, useCallback, useEffect, useState } from "react";
+import React, { Suspense, useCallback, useState } from "react";
 
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 
 import {
   useRecoilCallback,
-  useRecoilStateLoadable,
+  useRecoilState,
   useRecoilValue,
+  useSetRecoilState,
 } from "recoil";
 
 import { CircularProgress, MenuItem, TextField } from "@material-ui/core";
@@ -16,19 +17,70 @@ import { FiGithub } from "react-icons/fi";
 import { MdArrowBack, MdError, MdLock } from "react-icons/md";
 
 import { loggedUserReposState } from "~/store/auth";
-import { appListState } from "~/store/apps";
+import { appListLastPageState, appListState } from "~/store/apps";
 
 import { App } from "~/entities";
 import { appsServiceState } from "~/services";
 
-import { Layout, Loading, LoadingButton } from "~/components";
+import { Layout, LoadingButton } from "~/components";
 
 import { Container, RepoItem, ButtonContent, ProgressWrapper } from "./styles";
 
 const Page: NextPage = () => {
-  const [appList, setAppList] = useRecoilStateLoadable(appListState);
+  const defaultAppName = generateAppName();
 
-  const [appName, setAppName] = useState(generateAppName());
+  return (
+    <Layout header={<h1>Creating app</h1>}>
+      <Container>
+        <Suspense
+          fallback={
+            <form onSubmit={(event) => event.preventDefault()}>
+              <TextField
+                variant="outlined"
+                label="App name"
+                color="primary"
+                value={defaultAppName}
+              />
+
+              <TextField
+                select
+                label="Repository"
+                variant="outlined"
+                color="primary"
+              >
+                <ProgressWrapper>
+                  <CircularProgress />
+                </ProgressWrapper>
+              </TextField>
+
+              <LoadingButton
+                loading={true}
+                color={"primary"}
+                variant="outlined"
+                size="large"
+              >
+                Create
+              </LoadingButton>
+            </form>
+          }
+        >
+          <Content defaultAppName={defaultAppName} />
+        </Suspense>
+      </Container>
+    </Layout>
+  );
+};
+
+type Props = {
+  defaultAppName: string;
+};
+
+const Content: React.VFC<Props> = ({ defaultAppName }) => {
+  const lastPage = useRecoilValue(appListLastPageState);
+
+  const [_, setAppList] = useRecoilState(appListState(lastPage));
+
+  const [appName, setAppName] = useState(defaultAppName);
   const [appRepo, setAppRepo] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -39,9 +91,7 @@ const Page: NextPage = () => {
   const router = useRouter();
   const appsService = useRecoilValue(appsServiceState);
 
-  useEffect(() => {
-    if (appList.state === "hasError") throw appList.contents;
-  }, [appList.state]);
+  const repos = useRecoilValue(loggedUserReposState);
 
   const createNewApp = useRecoilCallback(() => async () => {
     if (loading) return;
@@ -54,9 +104,7 @@ const Page: NextPage = () => {
         repository: appRepo,
       });
 
-      if (appList.state === "hasValue") {
-        setAppList((apps) => [...apps, newApp]);
-      }
+      setAppList((apps) => apps.append(newApp));
 
       setApp(newApp);
       setSuccess(true);
@@ -71,97 +119,73 @@ const Page: NextPage = () => {
     router.push(`/apps/${app?.id}`);
   }, [router, app]);
 
-  return (
-    <Layout header={<h1>Creating app</h1>}>
-      <Container>
-        <form>
-          <TextField
-            variant="outlined"
-            label="App name"
-            color="primary"
-            value={appName}
-            onChange={(event) => setAppName(event.target.value)}
-          />
-
-          <Suspense
-            fallback={
-              <TextField
-                select
-                label="Repository"
-                variant="outlined"
-                color="primary"
-              >
-                <ProgressWrapper>
-                  <CircularProgress />
-                </ProgressWrapper>
-              </TextField>
-            }
-          >
-            <RepoField appRepo={appRepo} setAppRepo={setAppRepo} />
-          </Suspense>
-
-          <LoadingButton
-            loading={loading}
-            success={success}
-            successColor={green[500]}
-            successContent={
-              <ButtonContent>
-                <MdArrowBack size={22} />
-
-                <div className="text">Access app</div>
-              </ButtonContent>
-            }
-            error={Boolean(error)}
-            errorColor={red[500]}
-            errorContent={
-              <ButtonContent>
-                <MdError size={22} />
-
-                <div className="text">Retry</div>
-              </ButtonContent>
-            }
-            onClick={success ? backToApps : createNewApp}
-            color={"primary"}
-            variant="outlined"
-            size="large"
-          >
-            Create
-          </LoadingButton>
-        </form>
-      </Container>
-    </Layout>
-  );
-};
-
-type Props = {
-  appRepo: string;
-  setAppRepo: (repo: string) => void;
-};
-
-const RepoField: React.VFC<Props> = ({ appRepo, setAppRepo }) => {
-  const loggedUserRepos = useRecoilValue(loggedUserReposState);
+  const onSubmit = success ? backToApps : createNewApp;
 
   return (
-    <TextField
-      select
-      variant="outlined"
-      label="Repository"
-      color="primary"
-      value={appRepo}
-      onChange={(event) => setAppRepo(event.target.value)}
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        onSubmit();
+      }}
     >
-      {loggedUserRepos.map((repo) => (
-        <MenuItem key={repo.id} value={repo.name}>
-          <RepoItem>
-            <FiGithub />
+      <TextField
+        variant="outlined"
+        label="App name"
+        color="primary"
+        value={appName}
+        onChange={(event) => setAppName(event.target.value)}
+      />
 
-            <span className="name">{repo.name}</span>
+      <TextField
+        select
+        variant="outlined"
+        label="Repository"
+        color="primary"
+        value={appRepo}
+        onChange={(event) => setAppRepo(event.target.value)}
+      >
+        {repos.map((repo) => (
+          <MenuItem key={repo.id} value={repo.name}>
+            <RepoItem>
+              <FiGithub />
 
-            {repo.isPrivate && <MdLock />}
-          </RepoItem>
-        </MenuItem>
-      ))}
-    </TextField>
+              <span className="name">{repo.name}</span>
+
+              {repo.isPrivate && <MdLock />}
+            </RepoItem>
+          </MenuItem>
+        ))}
+      </TextField>
+
+      <LoadingButton
+        type="submit"
+        loading={loading}
+        success={success}
+        successColor={green[500]}
+        successContent={
+          <ButtonContent>
+            <MdArrowBack size={22} />
+
+            <div className="text">Access app</div>
+          </ButtonContent>
+        }
+        error={Boolean(error)}
+        errorColor={red[500]}
+        errorContent={
+          <ButtonContent>
+            <MdError size={22} />
+
+            <div className="text">Retry</div>
+          </ButtonContent>
+        }
+        color={"primary"}
+        variant="outlined"
+        size="large"
+      >
+        Create
+      </LoadingButton>
+    </form>
   );
 };
 

@@ -8,15 +8,29 @@ export const Container = styled(ShrinkContainer)`
   display: flex;
 `;
 
-export const ItemsWrapper = styled.div`
+export const ContentWrapper = styled.div`
+  display: flex;
   position: relative;
   flex: 1;
+`;
+
+export const ItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  > .MuiPagination-root {
+    margin: auto;
+    padding: 24px 0;
+    width: fit-content;
+  }
 `;
 
 export const Items = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
 `;
 
 export const AppLink = styled.a`

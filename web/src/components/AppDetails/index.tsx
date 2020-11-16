@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 
 import { useRouter } from "next/router";
 
@@ -10,12 +10,7 @@ import {
   SpeedDialIcon,
 } from "@material-ui/lab";
 
-import {
-  useRecoilCallback,
-  useRecoilStateLoadable,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilCallback, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { MdClose, MdDelete, MdEdit, MdPublish } from "react-icons/md";
 
@@ -23,12 +18,7 @@ import { Deploy } from "~/entities/app-status";
 
 import { appsServiceState } from "~/services";
 
-import {
-  appState,
-  appIsStartedState,
-  appStatusState,
-  appListState,
-} from "~/store/apps";
+import { appState, appIsStartedState, appStatusState } from "~/store/apps";
 
 import { LoadingButton, LoadingIcon } from "~/components";
 
@@ -108,12 +98,11 @@ type DeleteActionProps = SpeedDialActionProps & {
 };
 
 const DeleteAction: React.VFC<DeleteActionProps> = ({ appId, ...props }) => {
-  const [loading, setLoading] = useState(false);
-
   const appsService = useRecoilValue(appsServiceState);
+
   const router = useRouter();
 
-  const [appList, setAppList] = useRecoilStateLoadable(appListState);
+  const [loading, setLoading] = useState(false);
 
   const deleteApp = useRecoilCallback(() => async () => {
     if (loading) return;
@@ -122,7 +111,8 @@ const DeleteAction: React.VFC<DeleteActionProps> = ({ appId, ...props }) => {
 
     appsService.deleteAppById(appId);
 
-    setAppList((apps) => apps.filter((app) => app.id !== appId));
+    // TODO
+    // setAppList((apps) => apps.filter((app) => app.id !== appId));
     setLoading(false);
 
     router.push("/apps");
@@ -133,12 +123,12 @@ const DeleteAction: React.VFC<DeleteActionProps> = ({ appId, ...props }) => {
       {...props}
       tooltipTitle="Delete"
       icon={
-        <LoadingIcon loading={loading || appList.state === "loading"}>
+        <LoadingIcon loading={loading}>
           <MdDelete size={20} />
         </LoadingIcon>
       }
       tooltipOpen
-      onClick={appList.state === "hasValue" ? deleteApp : undefined}
+      onClick={deleteApp}
     />
   );
 };

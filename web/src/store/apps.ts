@@ -1,7 +1,5 @@
 import { atom, atomFamily, selector, selectorFamily } from "recoil";
 
-import { App } from "~/entities";
-
 import AppStatus, {
   Deployed,
   None,
@@ -11,11 +9,23 @@ import AppStatus, {
 
 import { appsServiceState } from "~/services";
 
-export const appListState = atom({
-  key: "appListState",
+export const appListLastPageState = atom({
+  key: "appListLastPageState",
   default: selector({
+    key: "appListLastPageState/default",
+    get: async ({ get }) => {
+      const page = await get(appsServiceState).findPaginatedApps(1);
+
+      return page.totalPages;
+    },
+  }),
+});
+
+export const appListState = atomFamily({
+  key: "appListState",
+  default: selectorFamily({
     key: "appListState/default",
-    get: ({ get }) => get(appsServiceState).findAllApps(),
+    get: (id) => ({ get }) => get(appsServiceState).findPaginatedApps(id),
   }),
 });
 

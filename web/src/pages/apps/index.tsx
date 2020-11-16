@@ -1,13 +1,14 @@
 import React, { Suspense } from "react";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { NextPage } from "next";
 
 import { MdDns, MdAdd } from "react-icons/md";
 
 import { useRecoilValue } from "recoil";
 
-import { Alert, AlertTitle, Skeleton } from "@material-ui/lab";
+import { Alert, AlertTitle, Pagination, Skeleton } from "@material-ui/lab";
 
 import { appListState } from "~/store/apps";
 
@@ -18,19 +19,22 @@ import { Layout } from "~/components";
 import {
   Container,
   Items,
+  ItemsWrapper,
   AppLink,
   CreateAppButton,
   CreateAppLink,
-  ItemsWrapper,
+  ContentWrapper,
 } from "./styles";
 
 const Page: NextPage = () => {
+  const { page = "1" } = useRouter().query;
+
   return (
     <Layout selected="apps" header={<h1>Apps</h1>}>
       <Container>
-        <ItemsWrapper>
+        <ContentWrapper>
           <Suspense fallback={<AppsLoading />}>
-            <Content />
+            <Content page={parseInt(page.toString())} />
           </Suspense>
 
           <Link href="/apps/new">
@@ -38,16 +42,21 @@ const Page: NextPage = () => {
               <MdAdd size={32} />
             </CreateAppButton>
           </Link>
-        </ItemsWrapper>
+        </ContentWrapper>
       </Container>
     </Layout>
   );
 };
 
-const Content: React.VFC = () => {
-  const apps = useRecoilValue(appListState);
+type Props = {
+  page: number;
+};
 
-  if (apps.length < 1) {
+const Content: React.VFC<Props> = ({ page }) => {
+  const apps = useRecoilValue(appListState(page));
+  const router = useRouter();
+
+  if (apps.items.length < 1) {
     return (
       <Alert severity="info">
         <AlertTitle>No apps found</AlertTitle>
@@ -63,28 +72,43 @@ const Content: React.VFC = () => {
   }
 
   return (
-    <Items>
-      {apps.map((app) => (
-        <li key={app.id}>
-          <Link href="/apps/[appId]" as={`/apps/${app.id}`}>
-            <AppLink>
-              <div className="icon">
-                <MdDns size={18} />
-              </div>
+    <ItemsWrapper>
+      <Items>
+        {apps.items.map((app) => (
+          <li key={app.id}>
+            <Link href="/apps/[appId]" as={`/apps/${app.id}`}>
+              <AppLink>
+                <div className="icon">
+                  <MdDns size={18} />
+                </div>
 
-              <span className="name">{app.name}</span>
-            </AppLink>
-          </Link>
-        </li>
-      ))}
-    </Items>
+                <span className="name">{app.name}</span>
+              </AppLink>
+            </Link>
+          </li>
+        ))}
+      </Items>
+
+      {apps.totalPages > 1 && (
+        <Pagination
+          variant="text"
+          color="primary"
+          size="large"
+          count={apps.totalPages}
+          page={page}
+          onChange={(_, page) => {
+            router.push(`/apps?page=${page}`);
+          }}
+        />
+      )}
+    </ItemsWrapper>
   );
 };
 
-const AppsLoading = () => (
+const AppsLoading: React.VFC = () => (
   <Items>
-    {Array.from(new Array(5)).map((id) => (
-      <li key={id}>
+    {Array.from(new Array(5)).map((_, index) => (
+      <li key={index}>
         <Skeleton variant="rect" width="100%" height={61} />
       </li>
     ))}

@@ -4,7 +4,9 @@ import { AxiosInstance } from "axios";
 
 import { apiServiceState } from "./api";
 
-import { App } from "~/entities";
+import { App, Page } from "~/entities";
+
+const TOTAL_PAGES_HEADER = "x-total-pages";
 
 type CreateNewAppDto = {
   name: string;
@@ -14,10 +16,15 @@ type CreateNewAppDto = {
 class AppsService {
   public constructor(private readonly http: AxiosInstance) {}
 
-  public async findAllApps(): Promise<App[]> {
-    const response = await this.http.get("/apps");
+  public async findPaginatedApps(page: unknown): Promise<Page<App>> {
+    const response = await this.http.get("/apps", {
+      params: { page },
+    });
 
-    return response.data.map(App.of);
+    return new Page(
+      response.data.map(App.of),
+      parseInt(response.headers[TOTAL_PAGES_HEADER])
+    );
   }
 
   public async findAppById(appId: string): Promise<App> {
