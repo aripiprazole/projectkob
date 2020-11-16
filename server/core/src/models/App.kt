@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 data class App(
   val id: String,
   val name: String,
-  val image: String = "ubuntu:latest"
+  val repository: String
 ) {
   inline val simpleId get() = id.split("-").first()
 

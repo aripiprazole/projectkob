@@ -5,14 +5,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Page<T>(
   val items: Collection<T>,
-  val pages: Int,
-  val currentPage: Int,
+  val totalPages: Int,
 )
 
-fun <T> Collection<T>.asPage(pages: Number, currentPage: Int = 1): Page<T> {
-  return Page(this, pages.toInt(), currentPage)
+fun <T> Collection<T>.asPage(pages: Number): Page<T> {
+  return Page(this, pages.toInt())
 }
 
 inline fun <T, R> Page<T>.map(func: (T) -> R): Page<R> {
-  return Page(items.map(func), pages, currentPage)
+  return Page(items.map(func), totalPages)
 }

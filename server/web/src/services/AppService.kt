@@ -37,10 +37,10 @@ private class CachedAppService(private val delegate: AppService) : AppService by
 private class AppServiceImpl : AppService {
   override suspend fun findPaginated(page: Int) = newSuspendedTransaction {
     val page = if (page <= 0) 1 else page
-    val allPages = ceil((Apps.selectAll().count() / PAGE_SIZE).toDouble())
+    val allPages = ceil((Apps.selectAll().count() / PAGE_SIZE).toDouble()) + 1
 
     Apps.selectAll().paginate(page, PAGE_SIZE).map { it.asApp() }
-      .asPage(allPages + 1, page)
+      .asPage(allPages)
   }
 
   override suspend fun findAppById(id: String) = newSuspendedTransaction {
@@ -54,21 +54,21 @@ private class AppServiceImpl : AppService {
 
     Apps.insert {
       it[name] = data.name
-      it[image] = data.image
+      it[repository] = data.repository
     }.asApp()
   }
 }
 
 private fun validateAppCreateDto(dto: AppCreateDto) = validate(dto) {
   validate(AppCreateDto::name).hasSize(min = 4, max = 24)
-  validate(AppCreateDto::image).hasSize(min = 4, max = 24)
+  validate(AppCreateDto::repository).hasSize(min = 4, max = 100)
 }
 
 private fun InsertStatement<Number>.asApp(): App {
   return App(
     this[Apps.id].value.toString(),
     this[Apps.name],
-    this[Apps.image]
+    this[Apps.repository]
   )
 }
 
@@ -76,6 +76,6 @@ private fun ResultRow.asApp(): App {
   return App(
     this[Apps.id].value.toString(),
     this[Apps.name],
-    this[Apps.image]
+    this[Apps.repository]
   )
 }
