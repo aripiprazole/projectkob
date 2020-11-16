@@ -20,12 +20,10 @@ class AppsService {
     return response.data.map(App.of);
   }
 
-  public async findAppById(_appId: string): Promise<App> {
-    return new App(
-      "33rn239fn",
-      "projectkob",
-      "https://github.com/LorenzooG/projectkob"
-    );
+  public async findAppById(appId: string): Promise<App> {
+    const response = await this.http.get(`/apps/${appId}`);
+
+    return App.of(response.data);
   }
 
   public async deleteAppById(appId: string): Promise<void> {
