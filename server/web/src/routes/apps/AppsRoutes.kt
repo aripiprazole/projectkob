@@ -7,6 +7,7 @@ import com.lorenzoog.projectkob.core.dtos.toResponseDto
 import com.lorenzoog.projectkob.core.services.AppService
 import com.lorenzoog.projectkob.server.auth.authenticated
 import io.ktor.application.*
+import io.ktor.http.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -30,6 +31,7 @@ fun Route.appsRoutes() = authenticated {
     }
 
     call.response.header(TOTAL_PAGES_HEADER, totalPages)
+    call.response.header(HttpHeaders.AccessControlExposeHeaders, TOTAL_PAGES_HEADER)
     call.respond(items)
   }
 
