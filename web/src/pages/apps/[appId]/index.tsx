@@ -48,7 +48,7 @@ const AppDetails: React.VFC<Props> = ({ appId }) => {
   const isStarted = useRecoilValue(appIsStartedState);
   const setStatus = useSetRecoilState(appStatusState);
 
-  const { id, name, repo } = useRecoilValue(appState(appId));
+  const { id, name, repository: repo } = useRecoilValue(appState(appId));
 
   return (
     <Container>

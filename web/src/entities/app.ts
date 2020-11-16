@@ -1,18 +1,18 @@
 type AppResponseDto = {
   id: string;
   name: string;
-  repo: string;
+  repository: string;
 };
 
 class App {
   public constructor(
     public readonly id: string,
     public readonly name: string,
-    public readonly repo: string
+    public readonly repository: string
   ) {}
 
   public static of(data: AppResponseDto): App {
-    return new App(data.id, data.name, data.repo);
+    return new App(data.id, data.name, data.repository);
   }
 }
 

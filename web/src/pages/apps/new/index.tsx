@@ -27,7 +27,7 @@ const Page: NextPage = () => {
   const createNewApp = useRecoilCallback(({ set }) => async () => {
     const newApp = await appsService.createNewApp({
       name: appName,
-      repo: appRepo,
+      repository: appRepo,
     });
 
     set(appListState, (apps) => [...apps, newApp]);
