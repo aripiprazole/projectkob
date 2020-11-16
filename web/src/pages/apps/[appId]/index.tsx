@@ -168,7 +168,7 @@ const DeleteAction: React.VFC<DeleteActionProps> = ({ appId, ...props }) => {
         </LoadingIcon>
       }
       tooltipOpen
-      onClick={appList.state === "loading" ? deleteApp : undefined}
+      onClick={appList.state === "hasValue" ? deleteApp : undefined}
     />
   );
 };
