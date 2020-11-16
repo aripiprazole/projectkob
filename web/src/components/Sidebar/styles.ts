@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-import { darken } from "@material-ui/core";
+import { CircularProgress, darken } from "@material-ui/core";
+
 import AppTheme from "~/styles/theme";
 
 const darkenPrimary = (theme: AppTheme) =>
@@ -78,4 +79,17 @@ export const Item = styled.div<ItemProps>`
 
     border: 1px solid ${(props) => darkenPrimary(props.theme)};
   }
+`;
+
+export const ProfileImage = styled.img`
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+  margin: auto;
+`;
+
+export const ProfileImageLoading = styled(CircularProgress).attrs({
+  color: "secondary",
+})`
+  margin: auto;
 `;

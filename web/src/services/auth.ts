@@ -13,7 +13,7 @@ type OAuth2Response = {
 class AuthService {
   public constructor(private readonly http: AxiosInstance) {}
 
-  public async findLoggedUser(): Promise<User | null> {
+  public async findLoggedUser(): Promise<User> {
     const response = await this.http.get("/user");
 
     return User.of(response.data);

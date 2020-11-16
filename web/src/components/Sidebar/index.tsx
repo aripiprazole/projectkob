@@ -1,10 +1,21 @@
-import React from "react";
+import React, { Suspense } from "react";
+
+import { useRecoilValue } from "recoil";
 
 import Link from "next/link";
 
-import { MdDashboard, MdHome, MdApps, MdPerson } from "react-icons/md";
+import { MdDashboard, MdHome, MdApps } from "react-icons/md";
 
-import { Container, Item, Nav, Logo } from "./styles";
+import { loggedUserState } from "~/store/auth";
+
+import {
+  Container,
+  Item,
+  Nav,
+  Logo,
+  ProfileImage,
+  ProfileImageLoading,
+} from "./styles";
 
 export type SidebarProps = {
   selected?: "apps" | "profile" | "home";
@@ -23,7 +34,9 @@ const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
         <Item selected={selected === "profile"}>
           <Link href="/profile">
             <a>
-              <MdPerson color="#eee" size={28} />
+              <Suspense fallback={<ProfileImageLoading />}>
+                <ProfileImageItem />
+              </Suspense>
 
               <span>Profile</span>
             </a>
@@ -32,6 +45,12 @@ const Sidebar: React.VFC<SidebarProps> = ({ selected }) => {
       </Nav>
     </Container>
   );
+};
+
+const ProfileImageItem: React.VFC = () => {
+  const loggedUser = useRecoilValue(loggedUserState);
+
+  return <ProfileImage src={loggedUser.avatar} alt={loggedUser.username} />;
 };
 
 const SidebarItems: React.VFC<SidebarProps> = ({ selected }) => (
