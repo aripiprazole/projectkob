@@ -3,12 +3,7 @@ import React, { Suspense, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 
-import {
-  useRecoilCallback,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilCallback, useRecoilState, useRecoilValue } from "recoil";
 
 import { CircularProgress, MenuItem, TextField } from "@material-ui/core";
 import { green, red } from "@material-ui/core/colors";
@@ -22,7 +17,7 @@ import { appListLastPageState, appListState } from "~/store/apps";
 import { App } from "~/entities";
 import { appsServiceState } from "~/services";
 
-import { Layout, LoadingButton } from "~/components";
+import { Layout, LoadingButton, PrimaryColor } from "~/components";
 
 import { Container, RepoItem, ButtonContent, ProgressWrapper } from "./styles";
 
@@ -158,33 +153,31 @@ const Content: React.VFC<Props> = ({ defaultAppName }) => {
         ))}
       </TextField>
 
-      <LoadingButton
-        type="submit"
-        loading={loading}
-        success={success}
-        successColor={green[500]}
-        successContent={
-          <ButtonContent>
-            <MdArrowBack size={22} />
+      <PrimaryColor primaryColor={success ? green[500] : error && red[500]}>
+        <LoadingButton
+          type="submit"
+          loading={loading}
+          color={"primary"}
+          variant="outlined"
+          size="large"
+        >
+          {success ? (
+            <ButtonContent>
+              <MdArrowBack size={22} />
 
-            <div className="text">Access app</div>
-          </ButtonContent>
-        }
-        error={Boolean(error)}
-        errorColor={red[500]}
-        errorContent={
-          <ButtonContent>
-            <MdError size={22} />
+              <div className="text">Access app</div>
+            </ButtonContent>
+          ) : error ? (
+            <ButtonContent>
+              <MdError size={22} />
 
-            <div className="text">Retry</div>
-          </ButtonContent>
-        }
-        color={"primary"}
-        variant="outlined"
-        size="large"
-      >
-        Create
-      </LoadingButton>
+              <div className="text">Retry</div>
+            </ButtonContent>
+          ) : (
+            "Create"
+          )}
+        </LoadingButton>
+      </PrimaryColor>
     </form>
   );
 };
