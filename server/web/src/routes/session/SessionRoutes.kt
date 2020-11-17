@@ -1,8 +1,9 @@
 @file:OptIn(KtorExperimentalLocationsAPI::class)
 
-package com.lorenzoog.projectkob.server.routes.auth
+package com.lorenzoog.projectkob.server.routes.session
 
 import com.lorenzoog.projectkob.server.AuthorizationException
+import com.lorenzoog.projectkob.server.auth.authenticated
 import com.lorenzoog.projectkob.server.auth.findLoggedUser
 import com.lorenzoog.projectkob.server.services.SessionService
 import com.lorenzoog.projectkob.server.utils.serializers.asJsonObject
@@ -16,7 +17,7 @@ import io.ktor.util.*
 import org.koin.ktor.ext.inject
 
 @OptIn(KtorExperimentalAPI::class, KtorExperimentalLocationsAPI::class)
-fun Route.authRoutes() {
+fun Route.sessionRoutes() {
   val sessionService by inject<SessionService>()
 
   authenticate {
@@ -28,12 +29,16 @@ fun Route.authRoutes() {
     }
   }
 
-  get<User> {
-    call.respond(call.findLoggedUser())
-  }
+  authenticated {
+    get<User> {
+      call.respond(call.findLoggedUser())
+    }
 
-  get<User.Repos> {
-    call.respond(sessionService.findUserRepos(call.request.authorization().orEmpty()))
+    get<User.Repositories> {
+      call.respond(sessionService.findUserRepos(call.request.authorization().orEmpty()).filter {
+        it.isValid
+      })
+    }
   }
 }
 
@@ -42,6 +47,6 @@ class Login
 
 @Location("user")
 class User {
-  @Location("repos")
-  data class Repos(val user: User)
+  @Location("repositories")
+  data class Repositories(val user: User)
 }

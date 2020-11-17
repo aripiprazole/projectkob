@@ -1,6 +1,7 @@
 package com.lorenzoog.projectkob.server.auth
 
-import com.lorenzoog.projectkob.server.models.GithubUser
+import com.lorenzoog.projectkob.server.AuthorizationException
+import com.lorenzoog.projectkob.server.models.User
 import com.lorenzoog.projectkob.server.services.SessionService
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -30,8 +31,6 @@ fun Application.setupAuthentication() = authentication {
   }
 }
 
-const val DEFAULT_TOKEN = ""
-
 private class AuthenticatedRouteSelector :
   RouteSelector(RouteSelectorEvaluation.qualityConstant) {
 
@@ -45,13 +44,15 @@ fun Route.authenticated(route: Route.() -> Unit): Route {
 
   return createChild(AuthenticatedRouteSelector()).apply {
     intercept(ApplicationCallPipeline.Features) {
-      sessionService.validateToken(call.request.authorization().orEmpty())
+      if (!sessionService.isTokenValid(call.request.authorization().orEmpty())) {
+        throw AuthorizationException()
+      }
     }
   }.apply(route)
 }
 
 @OptIn(KtorExperimentalAPI::class)
-suspend fun ApplicationCall.findLoggedUser(): GithubUser {
+suspend fun ApplicationCall.findLoggedUser(): User {
   return application.get<SessionService>().findUserByToken(
     request.authorization().orEmpty()
   )

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Button, ButtonProps } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 
 export const Container = styled.div`
   position: relative;

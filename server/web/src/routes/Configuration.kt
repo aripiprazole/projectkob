@@ -5,7 +5,7 @@ import com.lorenzoog.projectkob.server.AuthorizationException
 import com.lorenzoog.projectkob.server.EntityNotFoundException
 import com.lorenzoog.projectkob.server.routes.apps.appsRoutes
 import com.lorenzoog.projectkob.server.routes.apps.daemonRoutes
-import com.lorenzoog.projectkob.server.routes.auth.authRoutes
+import com.lorenzoog.projectkob.server.routes.session.sessionRoutes
 import com.lorenzoog.projectkob.server.utils.serializers.asJsonObject
 import io.ktor.application.*
 import io.ktor.features.*
@@ -17,7 +17,7 @@ import org.valiktor.ConstraintViolationException
 fun Application.setupRouting() = routing {
   appsRoutes()
   daemonRoutes()
-  authRoutes()
+  sessionRoutes()
 
   install(StatusPages) {
     exception<AuthorizationException> {

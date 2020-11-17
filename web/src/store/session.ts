@@ -12,7 +12,7 @@ export const loggedUserState = selector({
 export const loggedUserReposState = selector({
   key: "loggedUserReposState",
   get: async ({ get }) => {
-    return await get(authServiceState).findLoggedUserRepos();
+    return await get(authServiceState).findLoggedUserRepositories();
   },
 });
 

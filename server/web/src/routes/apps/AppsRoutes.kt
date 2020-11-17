@@ -35,7 +35,7 @@ fun Route.appsRoutes() = authenticated {
     call.respond(items)
   }
 
-  get<Apps.FindById> {
+  get<Apps.Id> {
     call.respond(call.findAppByParameters().toResponseDto())
   }
 }

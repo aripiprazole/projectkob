@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 import { guest } from "~/utils";
 
-import { authenticationTokenState, loggedUserState } from "~/store/auth";
+import { authenticationTokenState, loggedUserState } from "~/store/session";
 
 import { Container } from "./styles";
 import { CircularProgress } from "@material-ui/core";

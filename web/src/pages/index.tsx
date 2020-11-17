@@ -8,7 +8,7 @@ import { CircularProgress } from "@material-ui/core";
 
 import { authorized } from "~/utils";
 
-import { loggedUserState } from "~/store/auth";
+import { loggedUserState } from "~/store/session";
 
 import { Layout } from "~/components";
 

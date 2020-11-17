@@ -7,7 +7,7 @@ import { useRecoilValue } from "recoil";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 
-import { authenticationTokenState } from "~/store/auth";
+import { authenticationTokenState } from "~/store/session";
 
 const authorized = (Component: NextPage) =>
   dynamic(

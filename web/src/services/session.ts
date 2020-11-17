@@ -4,13 +4,13 @@ import { selector } from "recoil";
 
 import { apiServiceState } from "./api";
 
-import { Repo, User } from "~/entities";
+import { Repository, User } from "~/entities";
 
 type OAuth2Response = {
   accessToken: string;
 };
 
-class AuthService {
+class SessionService {
   public constructor(private readonly http: AxiosInstance) {}
 
   public async findLoggedUser(): Promise<User> {
@@ -19,22 +19,22 @@ class AuthService {
     return User.of(response.data);
   }
 
-  public async findLoggedUserRepos(): Promise<Repo[]> {
-    const response = await this.http.get("/user/repos");
+  public async findLoggedUserRepositories(): Promise<Repository[]> {
+    const response = await this.http.get("/user/repositories");
 
-    return response.data.map(Repo.of);
+    return response.data.map(Repository.of);
   }
 
   public async findTokenByCode(code: string): Promise<string> {
-    const response = await this.http.get<OAuth2Response>(
-      `/login?code=${code}&state=none`
-    );
+    const response = await this.http.get<OAuth2Response>("/login", {
+      params: { code, state: "none" },
+    });
 
     return response.data.accessToken;
   }
 }
 
-export const authServiceState = selector({
+export const sessionServiceState = selector({
   key: "authServiceState",
-  get: ({ get }) => new AuthService(get(apiServiceState)),
+  get: ({ get }) => new SessionService(get(apiServiceState)),
 });

@@ -1,4 +1,4 @@
-package com.lorenzoog.projectkob.server.models
+package com.lorenzoog.projectkob.server.dtos
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -16,18 +16,17 @@ data class GithubUser(
 )
 
 @Serializable
-data class Repo(
-  val id: Long,
+data class GithubRepository(
   @SerialName("full_name")
-  val name: String,
+  val fullName: String,
   val private: Boolean,
   @SerialName("html_url")
   val htmlUrl: String,
-  val permissions: Permissions,
+  val permissions: GithubPermissions,
 )
 
 @Serializable
-data class Permissions(
+data class GithubPermissions(
   val admin: Boolean,
   val push: Boolean,
   val pull: Boolean

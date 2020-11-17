@@ -48,7 +48,7 @@ fun Route.daemonRoutes() = authenticated {
     val app = call.findAppByParameters()
   }
 
-  post<Apps.FindById.Kill> {
+  post<Apps.Id.Kill> {
     val app = call.findAppByParameters()
     val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
 
@@ -57,7 +57,7 @@ fun Route.daemonRoutes() = authenticated {
     call.respond(HttpStatusCode.NoContent)
   }
 
-  post<Apps.FindById.Stop> {
+  post<Apps.Id.Stop> {
     val app = call.findAppByParameters()
     val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
 
@@ -66,7 +66,7 @@ fun Route.daemonRoutes() = authenticated {
     call.respond(HttpStatusCode.NoContent)
   }
 
-  post<Apps.FindById.Start> {
+  post<Apps.Id.Start> {
     val app = call.findAppByParameters()
     val containerId = deployService.findContainerIdByAppId(app.id) ?: return@post
 
@@ -75,7 +75,7 @@ fun Route.daemonRoutes() = authenticated {
     call.respond(HttpStatusCode.NoContent)
   }
 
-  post<Apps.FindById.Deploy> {
+  post<Apps.Id.Deploy> {
     val app = call.findAppByParameters()
 
     deployService.deploy(app, DeployConfig {

@@ -16,7 +16,7 @@ import { green, red } from "@material-ui/core/colors";
 import { FiGithub } from "react-icons/fi";
 import { MdArrowBack, MdError, MdLock } from "react-icons/md";
 
-import { loggedUserReposState } from "~/store/auth";
+import { loggedUserReposState } from "~/store/session";
 import { appListLastPageState, appListState } from "~/store/apps";
 
 import { App } from "~/entities";
@@ -81,7 +81,7 @@ const Content: React.VFC<Props> = ({ defaultAppName }) => {
   const [_, setAppList] = useRecoilState(appListState(lastPage));
 
   const [appName, setAppName] = useState(defaultAppName);
-  const [appRepo, setAppRepo] = useState("");
+  const [appRepository, setAppRepository] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
@@ -101,7 +101,7 @@ const Content: React.VFC<Props> = ({ defaultAppName }) => {
     try {
       const newApp = await appsService.createNewApp({
         name: appName,
-        repository: appRepo,
+        repository: appRepository,
       });
 
       setAppList((apps) => apps.append(newApp));
@@ -142,11 +142,11 @@ const Content: React.VFC<Props> = ({ defaultAppName }) => {
         variant="outlined"
         label="Repository"
         color="primary"
-        value={appRepo}
-        onChange={(event) => setAppRepo(event.target.value)}
+        value={appRepository}
+        onChange={(event) => setAppRepository(event.target.value)}
       >
         {repos.map((repo) => (
-          <MenuItem key={repo.id} value={repo.name}>
+          <MenuItem key={repo.name} value={repo.name}>
             <RepoItem>
               <FiGithub />
 

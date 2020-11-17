@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { MdDashboard, MdHome, MdApps } from "react-icons/md";
 
-import { loggedUserState } from "~/store/auth";
+import { loggedUserState } from "~/store/session";
 
 import {
   Container,

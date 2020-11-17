@@ -14,25 +14,19 @@ class Apps {
   @Location("/")
   data class Index(val page: Int = 1, val apps: Apps)
 
-  @Location("/")
-  data class Store(val apps: Apps)
-
   @Location("/{id}")
-  data class FindById(val id: String, val apps: Apps) {
-    @Location("/")
-    data class Show(val findById: FindById)
-
+  data class Id(val id: String, val apps: Apps) {
     @Location("/stop")
-    data class Stop(val findById: FindById)
+    data class Stop(val id: Id)
 
     @Location("/start")
-    data class Start(val findById: FindById)
+    data class Start(val id: Id)
 
     @Location("/kill")
-    data class Kill(val findById: FindById)
+    data class Kill(val id: Id)
 
     @Location("/deploy")
-    data class Deploy(val findById: FindById)
+    data class Deploy(val id: Id)
   }
 }
 

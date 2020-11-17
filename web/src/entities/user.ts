@@ -1,7 +1,7 @@
 export type UserResponseDto = {
   id: number;
-  login: string;
-  avatar_url: string;
+  username: string;
+  avatar: string;
 };
 
 class User {
@@ -12,7 +12,7 @@ class User {
   ) {}
 
   public static of(data: UserResponseDto): User {
-    return new User(data.id, data.login, data.avatar_url);
+    return new User(data.id, data.username, data.avatar);
   }
 }
 

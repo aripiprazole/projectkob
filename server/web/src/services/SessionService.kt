@@ -1,8 +1,11 @@
 package com.lorenzoog.projectkob.server.services
 
-import com.lorenzoog.projectkob.server.AuthorizationException
-import com.lorenzoog.projectkob.server.models.GithubUser
-import com.lorenzoog.projectkob.server.models.Repo
+import com.lorenzoog.projectkob.server.dtos.GithubRepository
+import com.lorenzoog.projectkob.server.dtos.GithubUser
+import com.lorenzoog.projectkob.server.models.Repository
+import com.lorenzoog.projectkob.server.models.User
+import com.lorenzoog.projectkob.server.models.asRepository
+import com.lorenzoog.projectkob.server.models.asUser
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -14,9 +17,9 @@ const val GITHUB_USER_URL = "https://api.github.com/user"
 const val GITHUB_REPOS_URL = "https://api.github.com/user/repos"
 
 interface SessionService {
-  suspend fun validateToken(token: String)
-  suspend fun findUserByToken(token: String): GithubUser
-  suspend fun findUserRepos(token: String): Collection<Repo>
+  suspend fun isTokenValid(token: String): Boolean
+  suspend fun findUserByToken(token: String): User
+  suspend fun findUserRepos(token: String): Collection<Repository>
 }
 
 @Suppress("FunctionName")
@@ -25,22 +28,24 @@ fun SessionService(): SessionService = SessionServiceImpl()
 private class SessionServiceImpl : KoinComponent, SessionService {
   private val client by inject<HttpClient>()
 
-  override suspend fun validateToken(token: String): Unit = try {
+  override suspend fun isTokenValid(token: String): Boolean = try {
     findUserByToken(token)
-    Unit
+    true
   } catch (exception: ClientRequestException) {
-    throw AuthorizationException()
+    false
   }
 
-  override suspend fun findUserByToken(token: String): GithubUser {
-    return client.get(GITHUB_USER_URL) {
+  override suspend fun findUserByToken(token: String): User {
+    return client.get<GithubUser>(GITHUB_USER_URL) {
       header(HttpHeaders.Authorization, token)
-    }
+    }.asUser()
   }
 
-  override suspend fun findUserRepos(token: String): Collection<Repo> {
-    return client.get<List<Repo>>(GITHUB_REPOS_URL) {
+  override suspend fun findUserRepos(token: String): Collection<Repository> {
+    return client.get<List<GithubRepository>>(GITHUB_REPOS_URL) {
       header(HttpHeaders.Authorization, token)
+    }.map {
+      it.asRepository()
     }
   }
 }
